@@ -1,0 +1,16 @@
+# 빌드 및 의존성
+node_modules
+dist
+build
+.next
+out
+
+# 버전 관리 및 환경 변수
+.git
+.env*
+
+# 문서 및 기타
+*.md
+.eslintrc.cjs
+.prettierrc
+package-lock.json
