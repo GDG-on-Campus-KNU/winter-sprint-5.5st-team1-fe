@@ -1,4 +1,4 @@
-import { Star } from "licid-react"
+import { Star } from "lucide-react"
 import { Badge } from "@/components/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -58,6 +58,25 @@ export function CardImage() {
                         ₩{product.currentPrice.toLocaleString()}
                     </span>
                 </div>
+                <div className="flex items-center gap-1">
+                    <div className="flex">
+                        {[1, 2, 3, 4, 5].map((starIndex) => {
+                            const fillAmount = Math.min(Math.max(product.rating - (starIndex - 1), 0), 1);
+                            return (
+                                <div key={starIndex} className="relative">
+                                    <Star size={24} className="text-yellow" fill="none" strokeWidth={2} />
+                                    <div className="absolute top-0 left-0 overflow-hidden" style={{ width: `${fillAmount * 100}%` }}>
+                                        <Star size={24} className="text-yellow fill-yellow" strokeWidth={2} />
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <span className="text-gray-300 font-regular text-[20px]">
+                        ({product.rating}점)
+                    </span>
+                </div>
+
             </CardHeader>
 
             <CardFooter>
