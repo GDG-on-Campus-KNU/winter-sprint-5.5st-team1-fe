@@ -5,7 +5,7 @@ import { QuantitySelector } from "./QuantitySelector";
 import { Product } from "../../types/product.type";
 import { useCartStore } from "../../stores/cart.store";
 import { Badge } from "../../components/badge";
-
+import { Button } from "../../components/ui/button";
 interface ProductInfoProps {
   product: Product;
 }
@@ -45,7 +45,7 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
         <span className="text-3xl font-bold text-red-500">
           {formatPrice(product.price)}
         </span>
-        <Badge percentage={product.discountRate} />
+        <Badge>{product.discountRate}% 할인</Badge>{" "}
       </div>
 
       <div className="border-t pt-4">
@@ -73,20 +73,19 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
       </div>
 
       <div className="flex gap-3">
-        <button
-          onClick={handleAddToCart}
-          className="flex-1 bg-blue-500 text-white py-3 rounded flex items-center justify-center gap-2 hover:bg-blue-600"
-        >
-          <ShoppingCart size={20} />
+        <Button onClick={handleAddToCart} size="lg" className="flex-1">
+          <ShoppingCart className="w-5 h-5" />
           장바구니 담기
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={handleBuyNow}
-          className="flex-1 border-2 border-gray-300 text-gray-700 py-3 rounded hover:bg-gray-50"
+          variant="outline"
+          size="lg"
+          className="flex-1"
         >
           바로 구매
-        </button>
+        </Button>
       </div>
     </div>
   );
