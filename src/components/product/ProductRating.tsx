@@ -2,13 +2,11 @@ import { Star } from "lucide-react";
 
 interface ProductRatingProps {
   rating: number;
-  reviewCount?: number;
   maxRating?: number;
 }
 
 export const ProductRating = ({
   rating,
-  reviewCount,
   maxRating = 5,
 }: ProductRatingProps) => {
   return (
@@ -28,10 +26,6 @@ export const ProductRating = ({
       </div>
 
       <span className="text-gray-600 font-medium">({rating})</span>
-
-      {reviewCount !== undefined && (
-        <span className="text-gray-400 text-sm">리뷰 {reviewCount}개</span>
-      )}
     </div>
   );
 };

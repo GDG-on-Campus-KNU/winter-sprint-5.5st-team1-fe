@@ -4,6 +4,7 @@ import { ProductRating } from "./ProductRating";
 import { QuantitySelector } from "./QuantitySelector";
 import { Product } from "../../types/product.type";
 import { useCartStore } from "../../stores/cart.store";
+import { Badge } from "../../components/badge";
 
 interface ProductInfoProps {
   product: Product;
@@ -33,16 +34,10 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
 
   return (
     <div className="space-y-6">
-      {/* 제목 */}
       <h1 className="text-3xl font-bold">{product.name}</h1>
 
-      {/* 별점 */}
-      <ProductRating
-        rating={product.rating}
-        reviewCount={product.reviewCount}
-      />
+      <ProductRating rating={product.rating} />
 
-      {/* 가격 */}
       <div className="flex items-center gap-3">
         <span className="text-gray-400 line-through text-lg">
           {formatPrice(product.originalPrice)}
@@ -50,12 +45,9 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
         <span className="text-3xl font-bold text-red-500">
           {formatPrice(product.price)}
         </span>
-        <span className="bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
-          {product.discountRate}% 할인
-        </span>
+        <Badge percentage={product.discountRate} />
       </div>
 
-      {/* 배송비 */}
       <div className="border-t pt-4">
         <p className="text-gray-600">
           📦 배송비: {formatPrice(product.shippingFee)}(
@@ -63,18 +55,15 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
         </p>
       </div>
 
-      {/* 재고 */}
       <div>
         <p className="text-gray-600">📦 재고: {product.stock}개</p>
       </div>
 
-      {/* 상품 설명 */}
       <div className="border-t pt-4">
         <h3 className="font-bold mb-2">상품 설명</h3>
         <p className="text-gray-600">{product.description}</p>
       </div>
 
-      {/* 수량 선택 */}
       <div className="border-t pt-4">
         <QuantitySelector
           quantity={quantity}
@@ -83,7 +72,6 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
         />
       </div>
 
-      {/* 버튼들 */}
       <div className="flex gap-3">
         <button
           onClick={handleAddToCart}

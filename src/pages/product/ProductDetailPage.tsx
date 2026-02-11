@@ -31,6 +31,8 @@ const ProductDetailPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <ProductImage imageUrl={product.imageUrl} alt={product.name} />
         <ProductInfo product={product} />
+      </div>
+      <div className="w-full">
         <ProductDetailInfo
           category={product.category}
           rating={product.rating}
