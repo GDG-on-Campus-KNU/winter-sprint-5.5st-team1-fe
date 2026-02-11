@@ -9,6 +9,8 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 89000,
     originalPrice: 109000,
     discountRate: 18,
+    rating: 4.4, 
+    reviewCount: 18, 
     stock: 50,
     shippingFee: 3000,
     freeShippingThreshold: 50000,
@@ -23,6 +25,8 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 45000,
     originalPrice: 59000,
     discountRate: 24,
+    rating: 4.7,
+    reviewCount: 32,
     stock: 120,
     shippingFee: 3000,
     freeShippingThreshold: 50000,
@@ -37,6 +41,8 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 129000,
     originalPrice: 159000,
     discountRate: 19,
+    rating: 4.5,
+    reviewCount: 25,
     stock: 35,
     shippingFee: 3000,
     freeShippingThreshold: 50000,
@@ -51,6 +57,8 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 359000,
     originalPrice: 429000,
     discountRate: 16,
+    rating: 4.8,
+    reviewCount: 67,
     stock: 15,
     shippingFee: 0,
     freeShippingThreshold: 50000,
@@ -65,6 +73,8 @@ export const MOCK_PRODUCTS: Product[] = [
     price: 35000,
     originalPrice: 45000,
     discountRate: 22,
+    rating: 4.6,
+    reviewCount: 12,
     stock: 200,
     shippingFee: 3000,
     freeShippingThreshold: 50000,
@@ -80,8 +90,4 @@ export const getProductById = (id: number): Product | undefined => {
 
 export const getProductsByCategory = (category: string): Product[] => {
   return MOCK_PRODUCTS.filter((product) => product.category === category);
-};
-
-export const getTotalProductCount = (): number => {
-  return MOCK_PRODUCTS.length;
 };

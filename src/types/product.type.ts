@@ -5,6 +5,8 @@ export interface Product {
   price: number;
   originalPrice: number;
   discountRate: number;
+  rating: number; 
+  reviewCount: number; 
   stock: number;
   shippingFee: number;
   freeShippingThreshold: number;
