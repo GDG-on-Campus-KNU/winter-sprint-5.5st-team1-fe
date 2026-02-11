@@ -4,32 +4,26 @@
 
 export default HomePage;*/}
 
-import { ProductCard } from "@/components/cards/productCard" // 아까 만든 상품 카드
-import { CouponCard } from "@/components/cards/couponCard"   // 방금 만든 쿠폰 카드
+import { ProductCard } from "@/components/cards/productCard";
+import { CouponCard } from "@/components/cards/couponCard";
+import { OrderInfoCard } from "@/components/cards/orderInfoCard";
 
 function HomePage() {
   return (
-    <div className="container mx-auto py-10 px-4">
-      <h1 className="mb-10 text-3xl font-bold text-center text-gray-800">컴포넌트 크기 비교</h1>
+    <div className="w-full py-10 px-4 flex flex-col items-center">
+      <h1 className="mb-16 text-3xl font-black text-gray-900">컴포넌트 레이아웃</h1>
 
-      {/* gap-6으로 카드 사이 간격을 주고, md:grid-cols-2로 나란히 배치 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-4xl mx-auto">
+      {/* 1층: 상품/쿠폰 카드는 적당한 너비로 묶기 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full mb-12">
+        <ProductCard />
+        <CouponCard />
+      </div>
 
-        {/* 왼쪽: 상품 카드 */}
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-gray-400 ml-1">Product Card</p>
-          <ProductCard />
-        </div>
-
-        {/* 오른쪽: 쿠폰 카드 */}
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-gray-400 ml-1">Coupon Card</p>
-          <CouponCard />
-        </div>
-
+      {/* 2층: 주문 카드는 훨씬 더 넓은 너비로 배치 */}
+      <div className="w-full max-w-7xl">
+        <OrderInfoCard />
       </div>
     </div>
   );
 }
-
 export default HomePage;

@@ -1,12 +1,6 @@
 import { Calendar } from "lucide-react"
 import { Card } from "@/components/ui/card";
-
-interface CouponData {
-    title: string;
-    discountRate: number;
-    minOrderPrice: number;
-    expiryDate: string;
-}
+import { CouponData } from "@/types/coupon";
 
 export function CouponCard() {
     const coupon: CouponData = {

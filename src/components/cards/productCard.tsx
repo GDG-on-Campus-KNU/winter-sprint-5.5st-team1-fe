@@ -8,16 +8,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-
-interface ProductData {
-    title: string;
-    description: string;
-    originalPrice: number;
-    currentPrice: number;
-    discountRate: number;
-    image: string;
-    rating: number;
-}
+import { ProductData } from "@/types/product"
 
 export function ProductCard() {
     const product: ProductData = {
