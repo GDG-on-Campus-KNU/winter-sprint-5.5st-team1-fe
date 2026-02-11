@@ -19,7 +19,7 @@ interface ProductData {
     rating: number;
 }
 
-export function CardImage() {
+export function ProductCard() {
     const product: ProductData = {
         title: "게이밍 키보드",
         description: "기계식 게이밍 키보드. RGB 백라이트, 반응 속도 1ms. 게이머를 위한 최적의 선택....",
@@ -50,7 +50,7 @@ export function CardImage() {
                 <CardDescription className="font-regular text-[20px] text-gray-300">
                     {product.description}
                 </CardDescription>
-                <div className="mt-2 flex items-center gap-2">
+                <div className="mt-2 flex items-baseline gap-2">
                     <span className="text-gray-300 line-through font-regular text-[20px]">
                         ₩{product.originalPrice.toLocaleString()}
                     </span>
