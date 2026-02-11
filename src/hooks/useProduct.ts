@@ -8,12 +8,15 @@ export const useProduct = (productId: number) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!productId) return;
+
     const fetchProduct = async () => {
       setLoading(true);
       try {
         const data = await getProduct(productId);
         setProduct(data);
-      } catch (err) {
+        setError(null); 
+      } catch {
         setError("상품을 불러올 수 없습니다");
       } finally {
         setLoading(false);
