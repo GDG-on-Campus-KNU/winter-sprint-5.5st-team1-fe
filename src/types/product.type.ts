@@ -5,17 +5,9 @@ export interface Product {
   price: number;
   originalPrice: number;
   discountRate: number;
-  rating: number;
-  reviewCount: number;
   stock: number;
-  shppingFee: number;
+  shippingFee: number;
   freeShippingThreshold: number;
   imageUrl: string;
   category: string;
-}
-
-export interface ProductDetailInfo {
-  category: string;
-  rating: number;
-  stock: number;
 }
