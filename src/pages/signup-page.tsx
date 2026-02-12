@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@$!%*#?&])[A-Za-z\d~!@$!%*#?&]{8,}$/;
+const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@$!%*#?&])[A-Za-z\d~!@$!%*#?&]{8,}$/;
 
 export default function RegisterPage() {
   const [formData, setFormData] = React.useState({
@@ -126,20 +126,20 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-8 shadow-lg border border-gray-100">
+      <div className="w-full max-w-lg space-y-8 rounded-xl bg-white p-8 shadow-lg border border-gray-100">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-500">회원가입</h2>
-          <p className="mt-2 text-base text-gray-400">회원 정보를 입력해주세요.</p>
+          <h2 className="text-[40px] font-bold tracking-tight text-gray-500">회원가입</h2>
+          <p className="mt-1 text-[20px] text-gray-400">회원 정보를 입력해주세요.</p>
         </div>
 
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-          <div className="space-y-2 text-base">
-            <Label htmlFor="name">이름</Label>
-            <Input id="name" placeholder="홍길동" value={formData.name} onChange={handleChange} className={cn("h-11")}/>
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-[20px] mb-1">이름</Label>
+            <Input id="name" placeholder="홍길동" value={formData.name} onChange={handleChange} className={cn("h-11 text-[18px] md:text-[18px]")}/>
           </div>
 
-          <div className="space-y-2 text-base">
-            <Label htmlFor="email">이메일</Label>
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-[20px] mb-1">이메일</Label>
             <div className="flex gap-2">
               <div className="relative flex-1">
                 <Input
@@ -148,7 +148,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   placeholder="example@domain.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className={cn("h-11", errors.email && "border-destructive")}
+                  className={cn("h-11 text-[18px] md:text-[18px]", errors.email && "border-destructive")}
                 />
               </div>
               <Button 
@@ -157,7 +157,6 @@ const handleSubmit = async (e: React.FormEvent) => {
                 size="default"
                 onClick={handleCheckEmail}
                 disabled={!!errors.email || !formData.email || isEmailChecked}
-                className={cn("border-pink-400 text-pink-400")}
               >
                 {isEmailChecked ? "확인됨" : "중복 확인"}
                 
@@ -172,31 +171,31 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">비밀번호</Label>
+            <Label htmlFor="password" className="text-[20px] mb-1">비밀번호</Label>
             <Input
               id="password"
               type="password"
               placeholder="영문+숫자+특수문자 8자 이상"
               value={formData.password}
               onChange={handleChange}
-              className={cn("h-11", errors.password && "border-destructive")}
+              className={cn("h-11 text-[18px] md:text-[18px]", errors.password && "border-destructive")}
             />
             {errors.password ? (
-              <p className="text-sm text-destructive">{errors.password}</p>
+              <p className="text-base text-destructive">{errors.password}</p>
             ) : formData.password && (
               <p className="text-base text-green-600">안전한 비밀번호입니다.</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">비밀번호 확인</Label>
+            <Label htmlFor="confirmPassword" className="text-[20px] mb-1">비밀번호 확인</Label>
             <Input
               id="confirmPassword"
               type="password"
               placeholder="비밀번호 재입력"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={cn("h-11", errors.confirmPassword && "border-destructive")}
+              className={cn("h-11 text-[18px] md:text-[18px]", errors.confirmPassword && "border-destructive")}
             />
             {errors.confirmPassword && <p className="text-base text-destructive">{errors.confirmPassword}</p>}
           </div>
