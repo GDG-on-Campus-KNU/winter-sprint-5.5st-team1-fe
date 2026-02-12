@@ -4,6 +4,7 @@ import { MOCK_PRODUCTS } from "@/mocks/data/products";
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Loading } from "@/components/loading";
+
 const SORT_OPTIONS = [
     { id: "price-desc", label: "가격순" },
     { id: "reviews", label: "리뷰순" },
@@ -18,7 +19,7 @@ function ProductPage() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoading(false);
-        }, 3000); // 3초 뒤에 로딩 완료
+        }, 3000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -39,6 +40,7 @@ function ProductPage() {
             </div>
         );
     }
+
     return (
         <div className="w-full min-h-screen bg-pink-500/3 py-10 px-[120px]">
             <div className="w-full mx-auto">
@@ -87,7 +89,7 @@ function ProductPage() {
 
                 <div className="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-x-5 gap-y-10 justify-items-center pb-10">
                     {sortedProducts.map((product) => (
-                        <div key={product.id} className="flex justify-center">
+                        <div key={product.id}>
                             <ProductCard product={product} />
                         </div>
                     ))}
