@@ -21,7 +21,7 @@ export function ProductCard() {
         rating: 4.4
     };
     return (
-        <Card className="relative mx-auto w-full max-w-sm overflow-hidden pt-0">
+        <Card className="relative mx-auto w-[380px] overflow-hidden pt-0">
             <div className="relative">
                 <div className="absolute left-6 top-6 z-40">
                     <Badge percentage={product.discountRate} className="bg-red" />
