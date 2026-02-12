@@ -63,6 +63,7 @@ export default function LoginPage() {
         }, 1500);
       });
 
+      // TODO: 실제 로그인 API 연동 전까지 사용하는 임시 토큰
       const fakeToken = "abc-123-token-sample";
       localStorage.setItem("authToken", fakeToken);
       // TODO: 메인 화면으로 이동
