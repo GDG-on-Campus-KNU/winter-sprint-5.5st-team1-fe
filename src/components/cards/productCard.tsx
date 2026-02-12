@@ -8,18 +8,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { ProductData } from "@/types/product"
+import { Product } from "@/types/product"
 
-export function ProductCard() {
-    const product: ProductData = {
-        title: "게이밍 키보드",
-        description: "기계식 게이밍 키보드. RGB 백라이트, 반응 속도 1ms. 게이머를 위한 최적의 선택....",
-        originalPrice: 109000,
-        currentPrice: 89000,
-        discountRate: 18,
-        image: "https://www.ipopularshop.com/cdn/shop/products/11e7b577890edee9283b2855e97b3410.png?v=1654393785",
-        rating: 4.4
-    };
+interface ProductCardProps {
+    product: Product;
+}
+export function ProductCard({ product }: ProductCardProps) {
     return (
         <Card className="relative mx-auto w-[380px] overflow-hidden pt-0">
             <div className="relative">
@@ -28,15 +22,15 @@ export function ProductCard() {
                 </div>
                 <div className="absolute inset-0 z-30 aspect-video" />
                 <img
-                    src={product.image}
-                    alt={product.title}
+                    src={product.imageUrl}
+                    alt={product.name}
                     className="relative z-20 aspect-video w-full object-cover "
                 />
             </div>
 
             <CardHeader>
                 <CardTitle className="font-semibold text-[24px] text-gray-500">
-                    {product.title}
+                    {product.name}
                 </CardTitle>
                 <CardDescription className="font-regular text-[20px] text-gray-300">
                     {product.description}

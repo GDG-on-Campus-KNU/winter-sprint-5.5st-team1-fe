@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
 import { ProductRating } from "./ProductRating";
 import { QuantitySelector } from "./QuantitySelector";
-import { Product } from "../../types/product.type";
+import { Product } from "../../types/product";
 import { useCartStore } from "../../stores/cart.store";
 import { Badge } from "../../components/badge";
 import { Button } from "../../components/ui/button";
