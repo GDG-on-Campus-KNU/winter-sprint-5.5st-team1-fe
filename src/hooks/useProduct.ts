@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Product } from "../types/product.type.ts";
+import { Product } from "../types/product.ts";
 import { getProduct } from "../api/product.api";
 
 export const useProduct = (productId: number) => {
@@ -15,7 +15,7 @@ export const useProduct = (productId: number) => {
       try {
         const data = await getProduct(productId);
         setProduct(data);
-        setError(null); 
+        setError(null);
       } catch {
         setError("상품을 불러올 수 없습니다");
       } finally {
