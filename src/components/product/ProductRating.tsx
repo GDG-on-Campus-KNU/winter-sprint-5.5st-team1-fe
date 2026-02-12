@@ -18,7 +18,7 @@ export const ProductRating = ({
             size={20}
             className={
               i < Math.floor(rating)
-                ? "fill-yellow-400 text-yellow-400"
+                ? "fill-yellow text-yellow"
                 : "text-gray-300"
             }
           />
