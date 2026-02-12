@@ -1,4 +1,4 @@
-import { Product } from "../types/product.type";
+import { Product } from "../types/product";
 import { MOCK_PRODUCTS, getProductById } from "@/mocks/data/products";
 
 // Mock 모드 (백엔드 준비되면 false로 변경)

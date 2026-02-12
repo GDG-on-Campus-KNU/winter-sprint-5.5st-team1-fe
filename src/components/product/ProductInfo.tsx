@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
 import { ProductRating } from "./ProductRating";
 import { QuantitySelector } from "./QuantitySelector";
-import { Product } from "../../types/product.type";
+import { Product } from "../../types/product";
 import { useCartStore } from "../../stores/cart.store";
 import { Badge } from "../../components/badge";
 import { Button } from "../../components/ui/button";
@@ -18,7 +18,7 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
     addItem({
       productId: product.id,
       name: product.name,
-      price: product.price,
+      price: product.currentPrice,
       quantity,
       imageUrl: product.imageUrl,
     });
@@ -43,7 +43,7 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
           {formatPrice(product.originalPrice)}
         </span>
         <span className="text-3xl font-bold text-red-500">
-          {formatPrice(product.price)}
+          {formatPrice(product.currentPrice)}
         </span>
         <Badge>{product.discountRate}% 할인</Badge>{" "}
       </div>
