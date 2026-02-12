@@ -18,7 +18,7 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
     addItem({
       productId: product.id,
       name: product.name,
-      price: product.price,
+      price: product.currentPrice,
       quantity,
       imageUrl: product.imageUrl,
     });
@@ -43,7 +43,7 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
           {formatPrice(product.originalPrice)}
         </span>
         <span className="text-3xl font-bold text-red-500">
-          {formatPrice(product.price)}
+          {formatPrice(product.currentPrice)}
         </span>
         <Badge>{product.discountRate}% 할인</Badge>{" "}
       </div>
