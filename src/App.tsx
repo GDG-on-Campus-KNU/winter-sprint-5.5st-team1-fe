@@ -1,14 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Layout } from "./components/layouts/MainLayout";
-import ProductDetailPage from "./pages/product/ProductDetailPage";
-
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/home/HomePage';
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path="/products/:id" element={<ProductDetailPage />} />
-        </Route>
+        <Route path="/" element={<HomePage />} />
       </Routes>
     </BrowserRouter>
   );

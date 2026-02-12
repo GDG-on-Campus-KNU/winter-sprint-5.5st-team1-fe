@@ -1,30 +1,28 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-
-// lucide-react에서 아이콘 가져오기
 import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  
   const [emailError, setEmailError] = React.useState<string | null>(null);
-
   const [isLoading, setIsLoading] = React.useState(false);
   const [formError, setFormError] = React.useState<string | null>(null);
+
+  const navigate = useNavigate();
+
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleEmailBlur = () => {
-    // 빈 값 체크
     if (!email.trim()) {
       setEmailError("이메일을 입력해주세요.");
       return;
     }
-    // 형식 체크: 틀린 경우에만 에러 메시지
     if (!emailRegex.test(email)) {
       setEmailError("유효한 이메일 형식이 아닙니다.");
     } else {
@@ -63,10 +61,11 @@ export default function LoginPage() {
         }, 1500);
       });
 
-      // TODO: 실제 로그인 API 연동 전까지 사용하는 임시 토큰
+      // 실제 로그인 API 연동 전까지 사용하는 임시 토큰
       const fakeToken = "abc-123-token-sample";
       localStorage.setItem("authToken", fakeToken);
-      // TODO: 메인 화면으로 이동
+      navigate("/home");
+
       
     } catch (error) {
       const err = error as Error;
@@ -77,21 +76,22 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-8 shadow-lg border border-gray-100">
+
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="w-full max-w-md space-y-8 rounded-xl border border-border bg-card p-8 shadow-lg text-card-foreground">
         
         <div className="text-center">
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900">로그인</h2>
-          <p className="mt-2 text-sm text-gray-700">이메일과 비밀번호를 입력해주세요.</p>
+          <h2 className="mt-2 text-xl font-bold tracking-tight text-foreground">로그인</h2>
+          <p className="mt-2 text-sm text-muted-foreground">이메일과 비밀번호를 입력해주세요.</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-5">
             
             <div className="relative text-left">
-              <label htmlFor="email" className="mb-2 block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              <Label htmlFor="email" className="mb-2 block text-sm font-medium">
                 이메일
-              </label>
+              </Label>
               
               <div className="relative">
                 <Input
@@ -109,14 +109,14 @@ export default function LoginPage() {
               </div>
 
               {emailError && (
-                <p className="mt-1.5 block text-sm text-destructive font-medium animate-in fade-in slide-in-from-top-1">
+                <p className="mt-1.5 block text-sm text-destructive font-medium">
                   {emailError}
                 </p>
               )}
             </div>
 
             <div className="text-left">
-              <Label htmlFor="password" className="mb-2 block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              <Label htmlFor="password" className="mb-2 block text-sm">
                 비밀번호
               </Label>
               <Input
@@ -136,17 +136,17 @@ export default function LoginPage() {
             </div>
           )}
 
-          <Button type="submit" className="w-full text-[16px]" size="default" disabled={isLoading}>
+          <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
             {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             {isLoading ? "로그인 중..." : "로그인"}
           </Button>
 
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-300" />
+              <span className="w-full border-t border-border" />
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500">
+            <div className="relative flex justify-center uppercase">
+              <span className="bg-card px-2 text-sm font-medium text-muted-foreground">
                 또는
               </span>
             </div>
@@ -155,7 +155,8 @@ export default function LoginPage() {
           <Button
             type="button"
             variant="outline"
-            className="w-full h-11 border-pink-500 text-pink-500 hover:bg-pink-50 hover:text-pink-600 text-[16px]"
+            size="lg"
+            className="w-full" 
             onClick={() => {
               // TODO: 회원가입 페이지로 이동
             }}
