@@ -10,11 +10,11 @@ export default function LoginPage() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [emailError, setEmailError] = React.useState<string | null>(null);
+  const [passwordError, setPasswordError] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [formError, setFormError] = React.useState<string | null>(null);
 
   const navigate = useNavigate();
-
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -35,16 +35,26 @@ export default function LoginPage() {
     if (emailError) setEmailError(null);
   };
 
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (passwordError) setPasswordError(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
+
+     if (!email.trim()) {
+      setEmailError("이메일을 입력해주세요.");
+      return;
+    }
 
     if (!emailRegex.test(email)) {
         setEmailError("유효한 이메일 형식이 아닙니다.");
         return;
     }
     if (!password) {
-        setFormError("비밀번호를 입력해주세요.");
+        setPasswordError("비밀번호를 입력해주세요.");
         return;
     }
 
@@ -78,18 +88,18 @@ export default function LoginPage() {
   return (
 
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md space-y-8 rounded-xl border border-border bg-card p-8 shadow-lg text-card-foreground">
+      <div className="w-full max-w-lg space-y-8 rounded-xl border border-border bg-card p-8 shadow-lg text-card-foreground">
         
         <div className="text-center">
-          <h2 className="mt-2 text-xl font-bold tracking-tight text-foreground">로그인</h2>
-          <p className="mt-2 text-sm text-muted-foreground">이메일과 비밀번호를 입력해주세요.</p>
+          <h2 className="mt-2 text-[40px] font-bold tracking-tight text-foreground">로그인</h2>
+          <p className="mt-1 text-[20px] text-muted-foreground">이메일과 비밀번호를 입력해주세요.</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-5">
             
             <div className="relative text-left">
-              <Label htmlFor="email" className="mb-2 block text-sm font-medium">
+              <Label htmlFor="email" className="mb-1 block text-[20px] font-medium">
                 이메일
               </Label>
               
@@ -102,36 +112,47 @@ export default function LoginPage() {
                   onChange={handleEmailChange}
                   onBlur={handleEmailBlur}
                   disabled={isLoading}
-                  className={cn(
+                  className={cn( 
+                    "text-[18px] md:text-[18px] h-11",
                     emailError ? "border-destructive" : ""
                   )}
                 />
               </div>
 
               {emailError && (
-                <p className="mt-1.5 block text-sm text-destructive font-medium">
+                <p className="mt-1 block text-base text-destructive font-medium">
                   {emailError}
                 </p>
               )}
             </div>
 
-            <div className="text-left">
-              <Label htmlFor="password" className="mb-2 block text-sm">
+            <div className="relative text-left">
+              <Label htmlFor="password" className="mb-1 block text-[20px] font-medium">
                 비밀번호
               </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-              />
+
+              <div className="relative">
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  disabled={isLoading}
+                  className={cn("text-[18px] md:text-[18px] h-11")}
+                />
+              </div>
+
+              {passwordError && (
+                <p className="mt-1 block text-base text-destructive font-medium">
+                  {passwordError}
+                </p>
+              )}
             </div>
           </div>
 
           {formError && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive text-center font-medium">
+            <div className="rounded-md bg-destructive/10 p-3 text-[18px] text-destructive text-center font-medium">
               {formError}
             </div>
           )}
@@ -141,12 +162,12 @@ export default function LoginPage() {
             {isLoading ? "로그인 중..." : "로그인"}
           </Button>
 
-          <div className="relative my-4">
+          <div className="relative mt-2 mb-4">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center uppercase">
-              <span className="bg-card px-2 text-sm font-medium text-muted-foreground">
+              <span className="bg-card px-2 text-base font-medium text-muted-foreground">
                 또는
               </span>
             </div>
@@ -158,7 +179,7 @@ export default function LoginPage() {
             size="lg"
             className="w-full" 
             onClick={() => {
-              // TODO: 회원가입 페이지로 이동
+              navigate("/signup-page");
             }}
           >
             회원가입
