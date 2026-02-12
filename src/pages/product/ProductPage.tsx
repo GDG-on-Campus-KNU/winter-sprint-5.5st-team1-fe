@@ -1,9 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ProductCard } from "@/components/cards/productCard";
 import { MOCK_PRODUCTS } from "@/mocks/data/products";
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronUp } from "lucide-react";
-
+import { Loading } from "@/components/loading";
 const SORT_OPTIONS = [
     { id: "price-desc", label: "가격순" },
     { id: "reviews", label: "리뷰순" },
@@ -11,8 +11,16 @@ const SORT_OPTIONS = [
 ] as const;
 
 function ProductPage() {
+    const [loading, setLoading] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const [sortBy, setSortBy] = useState<typeof SORT_OPTIONS[number]["id"]>("price-desc");
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 3000); // 3초 뒤에 로딩 완료
+        return () => clearTimeout(timer);
+    }, []);
 
     const sortedProducts = useMemo(() => {
         const result = [...MOCK_PRODUCTS];
@@ -24,6 +32,13 @@ function ProductPage() {
 
     const currentLabel = SORT_OPTIONS.find(opt => opt.id === sortBy)?.label;
 
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Loading />
+            </div>
+        );
+    }
     return (
         <div className="w-full min-h-screen bg-pink-500/3 py-10 px-[120px]">
             <div className="w-full mx-auto">

@@ -3,6 +3,7 @@ import { ProductImage } from "../../components/product/ProductImage";
 import { ProductInfo } from "../../components/product/ProductInfo";
 import { ProductDetailInfo } from "../../components/product/ProductDetailInfo";
 import { useProduct } from "../../hooks/useProduct";
+import { Loading } from "@/components/loading";
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,7 +12,7 @@ const ProductDetailPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl">로딩 중..</div>
+        <Loading />
       </div>
     );
   }
