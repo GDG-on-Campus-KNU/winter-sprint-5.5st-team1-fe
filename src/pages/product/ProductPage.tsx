@@ -46,7 +46,7 @@ function ProductPage() {
             <div className="w-full mx-auto">
                 <div className="flex justify-between items-center mb-10 relative">
                     <h1 className="text-[28px] font-semibold text-gray-500 ml-2">
-                        전체 상품
+                        전체 상품 한 눈에 보기
                     </h1>
 
                     <div className="relative mr-2">
