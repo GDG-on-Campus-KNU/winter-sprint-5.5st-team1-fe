@@ -1,11 +1,13 @@
 import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
 
 interface BadgeProps {
-  percentage: number;
+  children?: ReactNode;
+  percentage?: number;
   className?: string;
 }
 
-export function Badge({ percentage, className }: BadgeProps) {
+export function Badge({ children, percentage, className }: BadgeProps) {
   return (
     <div
       className={cn(
@@ -13,7 +15,7 @@ export function Badge({ percentage, className }: BadgeProps) {
         className,
       )}
     >
-      {percentage}%
+      {percentage !== undefined ? `${percentage}%` : children}
     </div>
   );
 }
