@@ -1,9 +1,15 @@
-export interface ProductData {
-  title: string;
+export interface Product {
+  id: number;
+  name: string;
   description: string;
-  originalPrice: number;
   currentPrice: number;
+  originalPrice: number;
   discountRate: number;
-  image: string;
   rating: number;
+  reviewCount: number;
+  stock: number;
+  shippingFee: number;
+  freeShippingThreshold: number;
+  imageUrl: string;
+  category: string;
 }
