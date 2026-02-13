@@ -42,7 +42,7 @@ function ProductPage() {
     }
 
     return (
-        <div className="w-full min-h-screen bg-pink-500/3 py-10 px-[120px]">
+        <div className="w-full min-h-screen py-10 px-[120px]">
             <div className="w-full mx-auto">
                 <div className="flex justify-between items-center mb-10 relative">
                     <h1 className="text-[28px] font-semibold text-gray-500 ml-2">
