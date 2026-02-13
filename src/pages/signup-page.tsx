@@ -1,13 +1,11 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import { useValidator } from "@/hooks/useValidator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@$!%*#?&])[A-Za-z\d~!@$!%*#?&]{8,}$/;
 
 export default function RegisterPage() {
   const [formData, setFormData] = React.useState({
@@ -17,61 +15,26 @@ export default function RegisterPage() {
     confirmPassword: "",
   });
 
-  const [errors, setErrors] = React.useState<Record<string, string | null>>({
-    email: null,
-    password: null,
-    confirmPassword: null,
-  });
-
   const [isLoading, setIsLoading] = React.useState(false);
   const [isEmailChecked, setIsEmailChecked] = React.useState(false);
-
+  const { errors, validate, setErrors } = useValidator();
   const navigate = useNavigate();
-
-  React.useEffect(() => {
-    if (!formData.email) {
-      setErrors(prev => ({ ...prev, email: null }));
-      return;
-    }
-    if (!emailRegex.test(formData.email)) {
-      setErrors(prev => ({ ...prev, email: "유효한 이메일 형식이 아닙니다." }));
-    } else {
-      setErrors(prev => ({ ...prev, email: null }));
-    }
-  }, [formData.email]);
-
-  React.useEffect(() => {
-    if (!formData.password) {
-      setErrors(prev => ({ ...prev, password: null }));
-      return;
-    }
-    if (!passwordRegex.test(formData.password)) {
-      setErrors(prev => ({ ...prev, password: "영문, 숫자, 특수문자 포함 8자 이상이어야 합니다." }));
-    } else {
-      setErrors(prev => ({ ...prev, password: null }));
-    }
-  }, [formData.password]);
-
-
-  React.useEffect(() => {
-    if (!formData.confirmPassword) {
-      setErrors(prev => ({ ...prev, confirmPassword: null }));
-      return;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      setErrors(prev => ({ ...prev, confirmPassword: "비밀번호가 일치하지 않습니다." }));
-    } else {
-      setErrors(prev => ({ ...prev, confirmPassword: null }));
-    }
-  }, [formData.password, formData.confirmPassword]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
+    
     setFormData((prev) => ({ ...prev, [id]: value }));
+
     if (id === "email") setIsEmailChecked(false);
+
+    validate(id, value, formData.password);
+
+    if (id === "password" && formData.confirmPassword) {
+      validate("confirmPassword", formData.confirmPassword, value);
+    }
   };
 
-const handleCheckEmail = async () => {
+  const handleCheckEmail = async () => {
     if (errors.email || !formData.email) return;
 
     setIsLoading(true);
@@ -90,7 +53,6 @@ const handleCheckEmail = async () => {
 
       // 중복 X
         setIsEmailChecked(true);
-        
         setErrors(prev => ({ ...prev, email: null }));
 
     } catch (error: unknown) {
@@ -102,26 +64,26 @@ const handleCheckEmail = async () => {
     }
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (Object.values(errors).some(v => v !== null)) return;
-  if (!isEmailChecked || !formData.name) return;
+    if (Object.values(errors).some(v => v !== null)) return;
+    if (!isEmailChecked || !formData.name) return;
 
-  setIsLoading(true);
+    setIsLoading(true);
 
-  try {
-    // 테스트용
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      // 테스트용
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // 가입 성공 가정 -> 메인 페이지 이동
-    navigate("/home"); 
+      // 가입 성공 가정 -> 메인 페이지 이동
+      navigate("/home"); 
 
-  } catch (error) {
-    console.error("회원가입 실패", error);
-  } finally {
-    setIsLoading(false);
-  }
+    } catch (error) {
+      console.error("회원가입 실패", error);
+    } finally {
+      setIsLoading(false);
+    }
 };
 
   return (
