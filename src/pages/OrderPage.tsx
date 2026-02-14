@@ -7,10 +7,12 @@ import { Coupon } from "@/types/coupon";
 import { getAvailableCoupons } from "@/mocks/data/coupons";
 import { CouponCard } from "@/components/cards/couponCard";
 import { OrderSummaryCard } from "@/components/cards/orderSummaryCard";
+import { OrderItemCard } from "@/components/cards/orderItemCard";
+import { MOCK_CART_ITEMS } from "@/mocks/data/cartItems";
 import { X } from "lucide-react";
 
 function OrderPage() {
-    const orderPrice = 80000;
+    const items = MOCK_CART_ITEMS;
     const shipping = 3000;
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
@@ -19,13 +21,15 @@ function OrderPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [deliveryMessage, setDeliveryMessage] = useState("");
 
+    const subtotal = useMemo(() =>
+        items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
     const isOrderValid = name.trim() !== "" && phone.trim() !== "" && address.trim() !== "";
     const availableSortedCoupons = useMemo(() => {
-        const available = getAvailableCoupons(orderPrice);
+        const available = getAvailableCoupons(subtotal);
         return [...available].sort((a, b) => a.id - b.id);
-    }, [orderPrice]);
-    const discountAmount = selectedCoupon ? (orderPrice * selectedCoupon.discountRate) / 100 : 0;
-    const totalAmount = orderPrice + shipping - discountAmount;
+    }, [subtotal]);
+    const discountAmount = selectedCoupon ? (subtotal * selectedCoupon.discountRate) / 100 : 0;
+    const totalAmount = subtotal + shipping - discountAmount;
 
     return (
         <div className="w-full min-h-screen bg-pink-500/3 py-10 px-[120px]">
@@ -34,10 +38,35 @@ function OrderPage() {
                     주문서 작성
                 </h1>
                 <div className="flex flex-row items-start gap-14 w-full">
-                    <div className="flex-1 space-y-10">
+                    <div className="flex-1 min-w-0 space-y-10">
                         <Card className="w-full pt-8 pb-10 px-8 border border-gray-100 shadow-sm bg-white rounded-xl text-left">
-                            <div className="flex flex-col gap-7  text-[24px]">
-                                <div className="text-[28px] font-semibold text-gray-500 ml-1 leading-none">
+                            <div className="flex flex-col gap-7">
+                                <div className="text-[28px] font-semibold text-gray-500 ml-1">
+                                    쿠폰 적용
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsModalOpen(true)}
+                                        className={cn(
+                                            "flex items-center px-4 w-full h-16 rounded-md border text-[24px] shadow-xs transition-all outline-none bg-white",
+                                            "border-pink-300",
+                                            "hover:border-pink-400 hover:bg-pink-50/30 cursor-pointer",
+                                            "focus:ring-[3px] focus:ring-pink-400/30 focus:border-pink-400",
+                                            selectedCoupon
+                                                ? "text-gray-500 font-medium"
+                                                : "text-gray-300 font-regular"
+                                        )}
+                                    >
+                                        {selectedCoupon ? `(${selectedCoupon.discountRate}%) ${selectedCoupon.title}` : "사용할 쿠폰을 선택하세요"}
+                                    </button>
+                                </div>
+                            </div>
+                        </Card>
+                        <Card className="w-full pt-8 pb-10 px-8 border border-gray-100 shadow-sm bg-white rounded-xl text-left">
+                            <div className="flex flex-col gap-7 text-[24px]">
+                                <div className="text-[28px] font-semibold text-gray-500 ml-1">
                                     배송지 정보
                                 </div>
 
@@ -78,44 +107,20 @@ function OrderPage() {
                                 </div>
                             </div>
                         </Card>
-                        <Card className="w-full pt-8 pb-10 px-8 border border-gray-100 shadow-sm bg-white rounded-xl text-left">
-                            <div className="flex flex-col gap-7">
-                                <div className="text-[28px] font-semibold text-gray-500 ml-1 leading-none">
-                                    쿠폰 적용
-                                </div>
-
-                                <div className="flex flex-col">
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsModalOpen(true)}
-                                        className={cn(
-                                            "flex items-center px-4 w-full h-16 rounded-md border text-[24px] shadow-xs transition-all outline-none bg-white",
-                                            "border-pink-300",
-                                            "hover:border-pink-400 hover:bg-pink-50/30 cursor-pointer",
-                                            "focus:ring-[3px] focus:ring-pink-400/30 focus:border-pink-400",
-                                            selectedCoupon
-                                                ? "text-gray-500 font-medium"
-                                                : "text-gray-300 font-regular"
-                                        )}
-                                    >
-                                        {selectedCoupon ? `${selectedCoupon.discountRate}% ${selectedCoupon.title}` : "사용할 쿠폰을 선택하세요."}
-                                    </button>
-                                </div>
-                            </div>
-                        </Card>
                     </div>
-                    <div>
+                    <aside className="w-[470px] flex-shrink-0 flex flex-col gap-10 sticky top-10">
+                        <OrderItemCard items={items} />
                         <OrderSummaryCard
-                            subtotal={orderPrice}
+                            subtotal={subtotal}
                             shipping={shipping}
                             discount={discountAmount}
                             total={totalAmount}
                             isOrderValid={isOrderValid}
                         />
-                    </div>
+                    </aside>
                 </div>
-
             </div>
+
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                     <div
@@ -128,7 +133,7 @@ function OrderPage() {
                             <h2 className="text-[32px] font-bold text-gray-500">쿠폰 선택</h2>
                             <button
                                 onClick={() => setIsModalOpen(false)}
-                                className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer -mt-2 -mr-2 p-2"
+                                className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer -mt-2 -mr-2"
                             >
                                 <X size={32} className="text-gray-400" />
                             </button>

@@ -10,9 +10,9 @@ interface OrderSummaryProps {
 }
 export function OrderSummaryCard({ subtotal, discount, shipping, total, isOrderValid }: OrderSummaryProps) {
     return (
-        <Card className="w-xl p-8 border border-gray-100 shadow-sm bg-white rounded-xl text-left">
+        <Card className="w-full pt-8 pb-[38.5px] px-8 border border-gray-100 shadow-sm bg-white rounded-xl text-left">
             <div className="flex flex-col gap-5">
-                <div className="text-[28px] font-semibold text-black">
+                <div className="text-[28px] font-semibold text-gray-500">
                     주문 요약
                 </div>
                 <div className="flex flex-col gap-2">
