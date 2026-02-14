@@ -43,6 +43,20 @@ export const MOCK_COUPONS: Coupon[] = [
     minOrderPrice: 10000,
     expiryDate: "2099-12-31",
   },
+  {
+    id: 7,
+    title: "VIP 전용 무제한 쿠폰",
+    discountRate: 7,
+    minOrderPrice: 10000,
+    expiryDate: "2099-12-31",
+  },
+  {
+    id: 8,
+    title: "VIP 전용 무제한 쿠폰",
+    discountRate: 7,
+    minOrderPrice: 10000,
+    expiryDate: "2099-12-31",
+  },
 ];
 
 export const getCouponById = (id: number): Coupon | undefined => {
