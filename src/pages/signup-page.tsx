@@ -22,7 +22,7 @@ export default function RegisterPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    
+
     setFormData((prev) => ({ ...prev, [id]: value }));
 
     if (id === "email") setIsEmailChecked(false);
@@ -42,7 +42,7 @@ export default function RegisterPage() {
       // 테스트용 (중복 O/중복 X)
       await new Promise((resolve, reject) => {
         setTimeout(() => {
-          const isDuplicated = false; 
+          const isDuplicated = false;
           if (isDuplicated) { // 중복 O
             reject(new Error("이미 사용 중인 이메일입니다."));
           } else {
@@ -52,11 +52,11 @@ export default function RegisterPage() {
       });
 
       // 중복 X
-        setIsEmailChecked(true);
-        setErrors(prev => ({ ...prev, email: null }));
+      setIsEmailChecked(true);
+      setErrors(prev => ({ ...prev, email: null }));
 
     } catch (error: unknown) {
-      setIsEmailChecked(false); 
+      setIsEmailChecked(false);
       const msg = error instanceof Error ? error.message : "중복 확인 오류";
       setErrors(prev => ({ ...prev, email: msg }));
     } finally {
@@ -77,27 +77,27 @@ export default function RegisterPage() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // 가입 성공 가정 -> 메인 페이지 이동
-      navigate("/home"); 
+      navigate("/home");
 
     } catch (error) {
       console.error("회원가입 실패", error);
     } finally {
       setIsLoading(false);
     }
-};
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="w-full max-w-lg space-y-8 rounded-xl bg-white p-8 shadow-lg border border-gray-100">
+      <div className="w-full max-w-lg space-y-8 rounded-xl bg-white p-8 shadow-lg border border-gray-100 text-card-foreground">
         <div className="text-center">
-          <h2 className="text-[40px] font-bold tracking-tight text-gray-500">회원가입</h2>
-          <p className="mt-1 text-[20px] text-gray-400">회원 정보를 입력해주세요.</p>
+          <h2 className="text-[40px] font-semibold tracking-tight">회원가입</h2>
+          <p className="mt-1 text-[20px] font-medium text-muted-foreground">회원 정보를 입력해주세요.</p>
         </div>
 
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-[20px] mb-1">이름</Label>
-            <Input id="name" placeholder="홍길동" value={formData.name} onChange={handleChange} className={cn("h-11 text-[18px] md:text-[18px]")}/>
+            <Label htmlFor="name" className="text-[20px] mb-1 font-medium">이름</Label>
+            <Input id="name" placeholder="홍길동" value={formData.name} onChange={handleChange} className={cn("h-11 text-[18px] md:text-[18px]")} />
           </div>
 
           <div className="space-y-2">
@@ -110,18 +110,18 @@ export default function RegisterPage() {
                   placeholder="example@domain.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className={cn("h-11 text-[18px] md:text-[18px]", errors.email && "border-destructive")}
+                  className={cn("h-11 text-[20px] md:text-[20px]", errors.email && "border-destructive")}
                 />
               </div>
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 variant="outline"
                 size="default"
                 onClick={handleCheckEmail}
                 disabled={!!errors.email || !formData.email || isEmailChecked}
               >
                 {isEmailChecked ? "확인됨" : "중복 확인"}
-                
+
               </Button>
             </div>
             {errors.email && <p className="text-base text-destructive">
@@ -140,7 +140,7 @@ export default function RegisterPage() {
               placeholder="영문+숫자+특수문자 8자 이상"
               value={formData.password}
               onChange={handleChange}
-              className={cn("h-11 text-[18px] md:text-[18px]", errors.password && "border-destructive")}
+              className={cn("h-11 text-[20px] md:text-[20px]", errors.password && "border-destructive")}
             />
             {errors.password ? (
               <p className="text-base text-destructive">{errors.password}</p>
@@ -157,33 +157,33 @@ export default function RegisterPage() {
               placeholder="비밀번호 재입력"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={cn("h-11 text-[18px] md:text-[18px]", errors.confirmPassword && "border-destructive")}
+              className={cn("h-11 text-[20px] md:text-[20px]", errors.confirmPassword && "border-destructive")}
             />
             {errors.confirmPassword && <p className="text-base text-destructive">{errors.confirmPassword}</p>}
           </div>
 
-          <Button 
-            className="w-full text-xl mt-4" 
-            size="lg" 
+          <Button
+            className="w-full text-xl mt-4"
+            size="lg"
             disabled={isLoading || Object.values(errors).some(v => v !== null) || !isEmailChecked || !formData.name}
           >
             {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "가입하기"}
           </Button>
-          
+
           <div className="flex items-center justify-center mt-6 gap-x-2">
-            <span className="text-base text-gray-500">이미 계정이 있으신가요?</span>
-              <Button
-                type="button"
-                variant="link"
-              className={cn("h-auto p-0 font-semibold text-base text-pink-500 hover:text-pink-500/80")}
-                onClick={() => {
-                  navigate("/login-page");
-                }}
-              >
-                로그인하기
-              </Button>
+            <span className="text-base text-gray-500 text-[18px]">이미 계정이 있으신가요?</span>
+            <Button
+              type="button"
+              variant="link"
+              className={cn("h-auto p-0 font-semibold text-base text-pink-500 hover:text-pink-500/80 text-[18px]")}
+              onClick={() => {
+                navigate("/login-page");
+              }}
+            >
+              로그인하기
+            </Button>
           </div>
-    
+
         </form>
       </div>
     </div>
