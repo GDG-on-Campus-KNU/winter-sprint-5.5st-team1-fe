@@ -1,0 +1,65 @@
+# CodeRabbit 설정 파일 (Frontend optimized)
+
+# 언어 설정: 모든 리뷰와 요약을 한국어로 진행
+language: "ko-KR"
+
+# 리뷰 설정
+reviews:
+  profile: "chill" # 부드럽고 친근한 톤
+  request_changes_workflow: false
+  high_level_summary: true
+  changed_files_summary: true
+  sequence_diagrams: true
+  poem: false
+  review_status: false
+  collapse_walkthrough: false
+  
+  # 자동 리뷰 설정
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    drafts: false # Draft PR은 리뷰 제외
+
+  # 프론트엔드 팀 코딩 컨벤션 (수정된 부분)
+  instructions: |
+    우리 팀의 프론트엔드 코딩 컨벤션을 준수하는지 확인해 주세요:
+    
+    **1. 컴포넌트 및 타입:**
+    - UI 컴포넌트는 되도록 기능을 분리하고 재사용 가능하게 작성합니다.
+    - TypeScript의 `any` 타입 사용은 지양하고, 정확한 Interface나 Type을 정의합니다.
+    - Props에 대한 적절한 타입 정의가 되어 있는지 확인합니다.
+    
+    **2. 스타일링 (Tailwind CSS):**
+    - 복잡한 클래스 조합은 가독성을 위해 적절히 줄바꿈하거나 정리합니다.
+    - 하드코딩된 색상 값 대신 Tailwind 테마 변수를 사용하는지 확인합니다.
+    
+    **3. 로직 및 성능:**
+    - `useEffect`의 의존성 배열이 누락되지 않았는지 체크합니다.
+    - 콘솔 로그(`console.log`)가 남지 않도록 주의합니다.
+    - 불필요한 리렌더링을 유발하는 코드가 있는지 확인합니다.
+    
+    **4. 보안 및 관리:**
+    - API Key나 환경 변수(`.env`)가 코드에 노출되지 않도록 합니다.
+    - `TODO/FIXME` 주석은 가급적 이슈로 등록하거나 즉시 해결을 권장합니다.
+
+# 리뷰에서 제외할 파일 패턴 (프론트엔드 최적화)
+path_filters:
+  excluded:
+    - "*.txt"
+    - "**/node_modules/**"
+    - "**/dist/**"
+    - "**/build/**"
+    - "**/public/**"
+    - "**/*.min.js"
+    - "package-lock.json"
+    - "yarn.lock"
+    - "pnpm-lock.yaml"
+    - "**/shancn/ui/**" # 자동 생성된 UI 컴포넌트 제외 (선택 사항)
+
+# 채팅 및 톤 설정
+chat:
+  auto_reply: true
+
+tone_instructions: >
+  항상 한국어로 응답해 주세요. 리뷰 코멘트, 변경 사항 요약, 제안 코드 및 
+  설명 모두 자연스럽고 공손한 한국어 문장으로 작성해야 합니다.
