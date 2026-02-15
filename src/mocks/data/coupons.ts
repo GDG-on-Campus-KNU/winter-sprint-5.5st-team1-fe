@@ -58,18 +58,3 @@ export const MOCK_COUPONS: Coupon[] = [
     expiryDate: "2099-12-31",
   },
 ];
-
-export const getCouponById = (id: number): Coupon | undefined => {
-  return MOCK_COUPONS.find((coupon) => coupon.id === id);
-};
-
-export const getAvailableCoupons = (orderPrice: number): Coupon[] => {
-  const today = new Date().toLocaleDateString("sv-SE");
-
-  return MOCK_COUPONS.filter((coupon) => {
-    const isPriceValid = orderPrice >= coupon.minOrderPrice;
-    const isNotExpired = coupon.expiryDate >= today;
-
-    return isPriceValid && isNotExpired;
-  });
-};

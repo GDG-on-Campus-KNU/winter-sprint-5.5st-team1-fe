@@ -4,7 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Coupon } from "@/types/coupon";
-import { getAvailableCoupons } from "@/mocks/data/coupons";
+import { MOCK_COUPONS } from "@/mocks/data/coupons";
+import { getAvailableCoupons } from "@/utils/coupon";
 import { CouponCard } from "@/components/cards/couponCard";
 import { OrderSummaryCard } from "@/components/cards/orderSummaryCard";
 import { OrderItemCard } from "@/components/cards/orderItemCard";
@@ -25,7 +26,7 @@ function OrderPage() {
         items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
     const isOrderValid = name.trim() !== "" && phone.trim() !== "" && address.trim() !== "";
     const availableSortedCoupons = useMemo(() => {
-        const available = getAvailableCoupons(subtotal);
+        const available = getAvailableCoupons(MOCK_COUPONS, subtotal);
         return [...available].sort((a, b) => a.id - b.id);
     }, [subtotal]);
     const discountAmount = selectedCoupon ? (subtotal * selectedCoupon.discountRate) / 100 : 0;
