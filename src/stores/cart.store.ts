@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface CartItem {
+export interface CartItem {
   productId: number;
   name: string;
   price: number;
