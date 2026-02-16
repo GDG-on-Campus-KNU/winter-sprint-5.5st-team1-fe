@@ -3,12 +3,12 @@ import * as React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { OrderCompleteListCard, OrderCompleteData } from "@/components/cards/orderCompleteListCard";
 
 export default function OrderCompletePage() {
     const navigate = useNavigate();
-    // URL에서 orderId 가져오기
     const { orderId } = useParams<{ orderId: string }>();
-    const [orderData, setOrderData] = React.useState<{ orderNumber: string } | null>(null);
+    const [orderData, setOrderData] = React.useState<OrderCompleteData | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isError, setIsError] = React.useState(false);
 
@@ -20,18 +20,34 @@ export default function OrderCompletePage() {
             return;
         }
 
-        // 서버에 요청을 보내기
+        // 서버 요청 보내기
         const fetchOrderData = async () => {
             try {
                 setIsLoading(true);
 
-                // 실제 API 요청 (예시)
+                // 실제 API 요청 예시
                 // const response = await axios.get(`https://api.my-commerce.com/orders/${orderId}`);
                 // setOrderData(response.data);
 
-                // API가 없으므로 로딩 스피너 테스트를 위한 가짜 지연 시간
+                // 로딩 스피너 테스트용 1초 지연
                 await new Promise((resolve) => setTimeout(resolve, 1000));
-                const data = { orderNumber: orderId };
+
+                // 테스트용 데이터
+                const data: OrderCompleteData = {
+                    orderNumber: orderId,
+                    status: "결제완료",
+                    orderDate: "2026년 2월 12일",
+                    address: "대구광역시 북구 대학로 80 (IT대학5호관)",
+                    recipient: "홍길동",
+                    phone: "010-1234-5678",
+                    deliveryMessage: "문 앞에 놔주세요.",
+                    items: [
+                        { name: "게이밍 키보드", quantity: 1 },
+                        { name: "무선 게이밍 마우스", quantity: 2 },
+                        { name: "장패드", quantity: 5 }
+                    ],
+                    totalPrice: 245000
+                };
                 setOrderData(data);
 
             } catch (error) {
@@ -45,7 +61,6 @@ export default function OrderCompletePage() {
         fetchOrderData();
     }, [orderId, navigate]);
 
-    // 로딩 중일 때 보여줄 화면
     if (isLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-background">
@@ -54,7 +69,6 @@ export default function OrderCompletePage() {
         );
     }
 
-    // 에러 발생 시 보여줄 화면
     if (isError || !orderData) {
         return (
             <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
@@ -64,7 +78,6 @@ export default function OrderCompletePage() {
         );
     }
 
-    // 성공 화면
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-10">
         
@@ -77,19 +90,18 @@ export default function OrderCompletePage() {
                     주문이 완료되었습니다!
                 </h1>
                 
-                <div className="mb-6 rounded-xl bg-gray-100 px-6 py-3">
-                    <span className="mr-3 text-[20px] text-gray-400 sm:text-[22px] md:text-[24px]">주문 번호:</span>
-                    <span className="text-[20px] font-bold tracking-wider text-pink-500 sm:text-[22px] md:text-[24px]">{orderData.orderNumber}</span>
-                </div>
-                
-                <p className="mt-10 mb-1 text-[20px] text-gray-400 leading-relaxed sm:text-[22px] md:text-[24px]">
+                <p className="mt-5 text-[20px] text-gray-400 leading-relaxed sm:text-[22px] md:text-[24px]">
                     고객님의 주문이 성공적으로 처리되었습니다.
                     <br />
                     주문 내역은 마이페이지에서 확인하실 수 있습니다.
-                </p>
+                </p> 
             </div>
 
-            <div className="flex w-full max-w-md flex-col gap-7 sm:flex-row">
+            <div className="flex w-full justify-center mb-10">
+                <OrderCompleteListCard order={orderData} />
+            </div>
+
+            <div className="flex w-full max-w-md flex-col gap-5 sm:flex-row">
                 <Button
                     type="button"
                     variant="outline"
@@ -107,7 +119,7 @@ export default function OrderCompletePage() {
                 주문 내역 보기
                 </Button>
             </div>
-        
+
         </div>
     );
 }
