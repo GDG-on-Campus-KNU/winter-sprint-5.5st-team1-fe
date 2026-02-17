@@ -13,7 +13,7 @@ interface OrderCompleteListCardProps {
 
 export function OrderCompleteListCard({ order }: OrderCompleteListCardProps) {
     return (
-        <Card className="w-full max-w-4xl p-7 border border-gray-100 shadow-sm bg-white rounded-xl text-left">
+        <Card className="w-full max-w-4xl p-9 border border-gray-100 shadow-sm bg-white rounded-xl text-left">
             <div className="flex flex-col gap-5">
                 
                 <div className="flex justify-between items-center">
