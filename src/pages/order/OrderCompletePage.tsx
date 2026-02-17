@@ -65,7 +65,7 @@ export default function OrderCompletePage() {
     if (isLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-background">
-                <Loading className="h-10 w-10 animate-spin text-pink-500" />
+                <Loading />
             </div>
         );
     }
