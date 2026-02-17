@@ -1,7 +1,8 @@
 import * as React from "react";
 // import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+import {Loading} from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { OrderCompleteListCard, OrderCompleteData } from "@/components/cards/orderCompleteListCard";
 
@@ -64,7 +65,7 @@ export default function OrderCompletePage() {
     if (isLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-background">
-                <Loader2 className="h-10 w-10 animate-spin text-pink-500" />
+                <Loading className="h-10 w-10 animate-spin text-pink-500" />
             </div>
         );
     }
