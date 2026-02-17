@@ -2,7 +2,7 @@ import * as React from "react";
 // import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
-import {Loading} from "@/components/loading";
+import { Loading } from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { OrderCompleteListCard, OrderCompleteData } from "@/components/cards/orderCompleteListCard";
 
@@ -87,11 +87,11 @@ export default function OrderCompletePage() {
             </div>
 
             <div className="mb-10 text-center">
-                <h1 className="mb-4 text-[24px] font-bold text-gray-500 sm:text-[32px] md:text-[40px]">
+                <h1 className="mb-4 text-[40px] font-bold text-gray-500">
                     주문이 완료되었습니다!
                 </h1>
                 
-                <p className="mt-5 text-[20px] text-gray-400 leading-relaxed sm:text-[22px] md:text-[24px]">
+                <p className="mt-5 text-xl text-gray-400 leading-relaxed">
                     고객님의 주문이 성공적으로 처리되었습니다.
                     <br />
                     주문 내역은 마이페이지에서 확인하실 수 있습니다.
@@ -102,11 +102,10 @@ export default function OrderCompletePage() {
                 <OrderCompleteListCard order={orderData} />
             </div>
 
-            <div className="flex w-full max-w-md flex-col gap-5 sm:flex-row">
+            <div className="flex w-full max-w-md flex-col gap-5 sm:flex-row sm:gap-10">
                 <Button
                     type="button"
-                    variant="outline"
-                    className="h-15 flex-1 text-[20px] sm:text-[22px] md:text-[24px] border-gray-200 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                    className="h-15 flex-1 text-xl bg-pink-500 text-pink-100 hover:bg-pink-400"
                     onClick={() => navigate("/product")}
                 >
                 쇼핑 계속하기
@@ -114,7 +113,8 @@ export default function OrderCompletePage() {
 
                 <Button
                     type="button"
-                    className="h-15 flex-1 text-[20px] sm:text-[22px] md:text-[24px] bg-pink-500 text-pink-100 hover:bg-pink-400"
+                    variant="outline"
+                    className="h-15 flex-1 text-xl border-gray-200 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
                     onClick={() => navigate("/mypage/orders")} // 주문 내역 경로 넣기
                 >
                 주문 내역 보기
