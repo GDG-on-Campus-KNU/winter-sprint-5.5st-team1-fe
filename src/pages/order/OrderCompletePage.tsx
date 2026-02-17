@@ -80,7 +80,7 @@ export default function OrderCompletePage() {
     }
 
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-10">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 py-15">
         
             <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-pink-200">
                 <CheckCircle2 className="h-14 w-14 text-pink-500" strokeWidth={2.5} />
