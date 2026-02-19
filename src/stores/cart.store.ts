@@ -3,10 +3,10 @@ import { persist } from "zustand/middleware";
 
 export interface CartItem {
   productId: number;
-  name: string;
-  price: number;
+  productName: string;
+  productPrice: number;
   quantity: number;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
 interface CartState {
@@ -29,7 +29,6 @@ export const useCartStore = create<CartState>()(
         const existingItem = items.find((i) => i.productId === item.productId);
 
         if (existingItem) {
-          // 이미 있으면 수량 증가
           set({
             items: items.map((i) =>
               i.productId === item.productId
@@ -38,7 +37,6 @@ export const useCartStore = create<CartState>()(
             ),
           });
         } else {
-          // 없으면 추가
           set({ items: [...items, item] });
         }
 
