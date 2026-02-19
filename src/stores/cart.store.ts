@@ -3,8 +3,8 @@ import { persist } from "zustand/middleware";
 
 export interface CartItem {
   productId: number;
-  productName: string;
-  productPrice: number;
+  name: string; 
+  price: number; 
   quantity: number;
   imageUrl?: string;
 }
@@ -44,9 +44,7 @@ export const useCartStore = create<CartState>()(
       },
 
       removeItem: (productId) => {
-        set({
-          items: get().items.filter((i) => i.productId !== productId),
-        });
+        set({ items: get().items.filter((i) => i.productId !== productId) });
         set({ itemCount: get().items.reduce((sum, i) => sum + i.quantity, 0) });
       },
 
@@ -61,8 +59,6 @@ export const useCartStore = create<CartState>()(
 
       clearCart: () => set({ items: [], itemCount: 0 }),
     }),
-    {
-      name: "cart-storage",
-    },
+    { name: "cart-storage" },
   ),
 );

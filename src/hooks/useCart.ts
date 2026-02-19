@@ -25,8 +25,8 @@ export const useCart = () => {
         data.items.forEach((item) => {
           addItem({
             productId: item.productId,
-            productName: item.productName,
-            productPrice: item.productPrice,
+            name: item.productName, 
+            price: item.productPrice, 
             quantity: item.quantity,
           });
         });
@@ -101,7 +101,7 @@ export const useCart = () => {
   const calcTotal = (selectedIds: number[]) => {
     return items
       .filter((item) => selectedIds.includes(item.productId))
-      .reduce((sum, item) => sum + item.productPrice * item.quantity, 0);
+      .reduce((sum, item) => sum + item.price * item.quantity, 0); 
   };
 
   return {

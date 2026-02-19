@@ -35,10 +35,10 @@ export default function CartItem({
 
         <div className="flex flex-1 flex-col justify-center gap-1">
           <p className="font-semibold text-gray-700 text-16">
-            {item.productName}
+            {item.name}
           </p>
           <p className="text-pink-500 font-bold text-20">
-            {item.productPrice.toLocaleString()}원
+            {item.price.toLocaleString()}원
           </p>
         </div>
 
