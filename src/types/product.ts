@@ -19,4 +19,5 @@ export interface ProductFormData {
     price: number;
     stock: number;
     description: string;
+    imageFile?: File | null;
 }
