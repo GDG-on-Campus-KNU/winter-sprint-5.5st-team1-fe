@@ -15,9 +15,10 @@ export interface Product {
 }
 
 export interface ProductFormData {
-    name: string;
-    price: number;
-    stock: number;
-    description: string;
-    imageFile?: File | null;
+  name: string;
+  price: number;
+  stock: number;
+  description: string;
+  imageFile?: File | null; // 새로 선택된 이미지 파일
+  imageUrl?: string; // 기존 이미지 URL (수정 시에만 사용)
 }
