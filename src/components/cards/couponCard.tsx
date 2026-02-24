@@ -1,16 +1,20 @@
 import { Calendar } from "lucide-react"
 import { Card } from "@/components/ui/card";
-import { CouponData } from "@/types/coupon";
+import { Coupon } from "@/types/coupon";
+import { cn } from "@/lib/utils";
 
-export function CouponCard() {
-    const coupon: CouponData = {
-        title: "10주년 기념 감사 할인 쿠폰",
-        discountRate: 30,
-        minOrderPrice: 50000,
-        expiryDate: "2026년 3월 11일까지"
-    };
+interface CouponCardProps {
+    coupon: Coupon;
+    isHighlighted?: boolean;
+}
+
+export function CouponCard({ coupon, isHighlighted }: CouponCardProps) {
+
     return (
-        <Card className="w-full max-w-sm justify-center p-6 border border-gray-100 shadow-sm bg-white rounded-xl text-left h-[216px]">
+        <Card className={cn(
+            "w-full max-w-sm justify-center p-6 border shadow-sm bg-white rounded-xl text-left h-[216px] hover:bg-pink-50/30",
+            isHighlighted ? "border-pink-400" : "border-gray-100"
+        )}>
             <div className="space-y-2">
                 <span className="text-[40px] font-bold text-pink-500">
                     {coupon.discountRate}%

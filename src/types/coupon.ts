@@ -1,4 +1,5 @@
-export interface CouponData {
+export interface Coupon {
+  id: number;
   title: string;
   discountRate: number;
   minOrderPrice: number;

@@ -44,18 +44,18 @@ export default function LoginPage() {
     e.preventDefault();
     setFormError(null);
 
-     if (!email.trim()) {
+    if (!email.trim()) {
       setEmailError("이메일을 입력해주세요.");
       return;
     }
 
     if (!emailRegex.test(email)) {
-        setEmailError("유효한 이메일 형식이 아닙니다.");
-        return;
+      setEmailError("유효한 이메일 형식이 아닙니다.");
+      return;
     }
     if (!password) {
-        setPasswordError("비밀번호를 입력해주세요.");
-        return;
+      setPasswordError("비밀번호를 입력해주세요.");
+      return;
     }
 
     setIsLoading(true);
@@ -76,7 +76,7 @@ export default function LoginPage() {
       localStorage.setItem("authToken", fakeToken);
       navigate("/home");
 
-      
+
     } catch (error) {
       const err = error as Error;
       setFormError(err.message || "로그인 실패");
@@ -89,20 +89,20 @@ export default function LoginPage() {
 
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-lg space-y-8 rounded-xl border border-border bg-card p-8 shadow-lg text-card-foreground">
-        
+
         <div className="text-center">
-          <h2 className="mt-2 text-[40px] font-bold tracking-tight text-foreground">로그인</h2>
-          <p className="mt-1 text-[20px] text-muted-foreground">이메일과 비밀번호를 입력해주세요.</p>
+          <h2 className="mt-2 text-[40px] font-semibold tracking-tight">로그인</h2>
+          <p className="mt-1 text-[20px] font-medium text-muted-foreground">이메일과 비밀번호를 입력해주세요.</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-5">
-            
+
             <div className="relative text-left">
               <Label htmlFor="email" className="mb-1 block text-[20px] font-medium">
                 이메일
               </Label>
-              
+
               <div className="relative">
                 <Input
                   id="email"
@@ -112,8 +112,8 @@ export default function LoginPage() {
                   onChange={handleEmailChange}
                   onBlur={handleEmailBlur}
                   disabled={isLoading}
-                  className={cn( 
-                    "text-[18px] md:text-[18px] h-11",
+                  className={cn(
+                    "text-[20px] md:text-[20px] h-11",
                     emailError ? "border-destructive" : ""
                   )}
                 />
@@ -139,7 +139,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={handlePasswordChange}
                   disabled={isLoading}
-                  className={cn("text-[18px] md:text-[18px] h-11")}
+                  className={cn("text-[20px] md:text-[20px] h-11")}
                 />
               </div>
 
@@ -172,12 +172,12 @@ export default function LoginPage() {
               </span>
             </div>
           </div>
-          
+
           <Button
             type="button"
             variant="outline"
             size="lg"
-            className="w-full" 
+            className="w-full"
             onClick={() => {
               navigate("/signup-page");
             }}
