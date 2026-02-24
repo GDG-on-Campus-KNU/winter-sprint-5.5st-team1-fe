@@ -17,7 +17,7 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
     const [price, setPrice] = useState(initialData?.price || 0);
     const [stock, setStock] = useState(initialData?.stock || 0);
     const [description, setDescription] = useState(initialData?.description || "");
-    const [imageFile, setImageFile] = useState<File | null>(null); // 새로 선택된 이미지 파일
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -90,7 +90,7 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                 <Label className="text-2xl text-gray-500">상품 이미지 <span className="text-pink-500">*</span></Label>
                 <ImageUploadPreview 
                     // 수정 모드일 경우 기존 이미지 보여주기
-                    // initialImageUrl={initialData?.imageUrl} 
+                    initialImageUrl={initialData?.imageUrl} 
                     onImageSelect={(file) => setImageFile(file)}
                 />
             </div>
