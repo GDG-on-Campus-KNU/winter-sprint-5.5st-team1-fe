@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
 import { Loading } from "@/components/loading";
 import { Button } from "@/components/ui/button";
-import { OrderCompleteListCard, OrderCompleteData } from "@/components/cards/orderCompleteListCard";
+import { OrderCompleteListCard, OrderCompleteData } from "@/components/cards/order/orderCompleteListCard";
 
 export default function OrderCompletePage() {
     const navigate = useNavigate();
@@ -81,7 +81,7 @@ export default function OrderCompletePage() {
 
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 py-15">
-        
+
             <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-pink-200">
                 <CheckCircle2 className="h-14 w-14 text-pink-500" strokeWidth={2.5} />
             </div>
@@ -90,12 +90,12 @@ export default function OrderCompletePage() {
                 <h1 className="mb-4 text-[40px] font-bold text-gray-500">
                     주문이 완료되었습니다!
                 </h1>
-                
+
                 <p className="mt-5 text-xl text-gray-400 leading-relaxed">
                     고객님의 주문이 성공적으로 처리되었습니다.
                     <br />
                     주문 내역은 마이페이지에서 확인하실 수 있습니다.
-                </p> 
+                </p>
             </div>
 
             <div className="flex w-full justify-center mb-10">
@@ -108,7 +108,7 @@ export default function OrderCompletePage() {
                     className="h-15 flex-1 text-xl bg-pink-500 text-pink-100 hover:bg-pink-400"
                     onClick={() => navigate("/product")}
                 >
-                쇼핑 계속하기
+                    쇼핑 계속하기
                 </Button>
 
                 <Button
@@ -117,7 +117,7 @@ export default function OrderCompletePage() {
                     className="h-15 flex-1 text-xl border-gray-200 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
                     onClick={() => navigate("/mypage/orders")} // 주문 내역 경로 넣기
                 >
-                주문 내역 보기
+                    주문 내역 보기
                 </Button>
             </div>
 

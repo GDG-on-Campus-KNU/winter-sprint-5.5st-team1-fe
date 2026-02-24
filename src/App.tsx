@@ -3,9 +3,10 @@ import { Layout } from "./components/layouts/MainLayout";
 import HomePage from "./pages/home/HomePage";
 import ProductPage from "./pages/product/ProductPage";
 import ProductDetailPage from "./pages/product/ProductDetailPage";
-import OrderPage from "./pages/OrderPage";
+import OrderPage from "./pages/order/OrderPage";
 import OrderCompletePage from "./pages/order/OrderCompletePage";
 import CartPage from "./pages/CartPage";
+import ManagePage from "./pages/AdminProductPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             element={<OrderCompletePage />}
           />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/admin/product" element={<ManagePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

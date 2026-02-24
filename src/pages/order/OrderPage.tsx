@@ -7,8 +7,8 @@ import { Coupon } from "@/types/coupon";
 import { MOCK_COUPONS } from "@/mocks/data/coupons";
 import { getAvailableCoupons } from "@/utils/coupon";
 import { CouponCard } from "@/components/cards/couponCard";
-import { OrderSummaryCard } from "@/components/cards/orderSummaryCard";
-import { OrderItemCard } from "@/components/cards/orderItemCard";
+import { OrderSummaryCard } from "@/components/cards/order/orderSummaryCard";
+import { OrderItemCard } from "@/components/cards/order/orderItemCard";
 import { MOCK_CART_ITEMS } from "@/mocks/data/cartItems";
 import { X } from "lucide-react";
 
