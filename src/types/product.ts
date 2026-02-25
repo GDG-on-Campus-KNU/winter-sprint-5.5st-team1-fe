@@ -19,7 +19,6 @@ export interface ProductFormData {
   currentPrice: number;
   originalPrice: number; // 원가
   stock: number;
-  rating: number;
   category: string;
   description: string;
   imageFile?: File | null; // 새로 선택된 이미지 파일

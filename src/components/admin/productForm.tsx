@@ -27,14 +27,13 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
     const [currentPrice, setCurrentPrice] = useState(initialData?.currentPrice || 0);
     const [originalPrice, setOriginalPrice] = useState(initialData?.originalPrice || 0);
     const [stock, setStock] = useState(initialData?.stock || 0);
-    const [rating, setRating] = useState(initialData?.rating || 0);
     const [category, setCategory] = useState(initialData?.category || "");
     const [description, setDescription] = useState(initialData?.description || "");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        onSubmit({ name, currentPrice, originalPrice, stock, rating, category, description, imageFile });
+        onSubmit({ name, currentPrice, originalPrice, stock, category, description, imageFile });
     };
 
     return (
@@ -57,7 +56,9 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                         required
                     />
                 </div>
+            </div>
 
+            <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-3">
                     <Label htmlFor="category" className="text-2xl text-gray-500">카테고리 <span className="text-pink-500">*</span></Label>
                     <Select required value={category} onValueChange={setCategory}>
@@ -76,8 +77,21 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                         </SelectContent>
                     </Select>
                 </div>
+                
+                <div className="space-y-3">
+                    <Label htmlFor="stock" className="text-2xl text-gray-500">재고 (개) <span className="text-pink-500">*</span></Label>
+                    <Input
+                        id="stock"
+                        type="number"
+                        value={stock === 0 ? "" : stock}
+                        onChange={(e) => setStock(Number(e.target.value))}
+                        className="h-14 text-xl md:text-xl"
+                        min="0"
+                        required
+                    />
+                </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-3">
                     <Label htmlFor="costPrice" className="text-2xl text-gray-500">원가 (원)</Label>
@@ -100,34 +114,6 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                         className="h-14 text-xl md:text-xl"
                         min="0"
                         required
-                    />
-                </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-3">
-                    <Label htmlFor="stock" className="text-2xl text-gray-500">재고 (개) <span className="text-pink-500">*</span></Label>
-                    <Input
-                        id="stock"
-                        type="number"
-                        value={stock === 0 ? "" : stock}
-                        onChange={(e) => setStock(Number(e.target.value))}
-                        className="h-14 text-xl md:text-xl"
-                        min="0"
-                        required
-                    />
-                </div>
-                <div className="space-y-3">
-                    <Label htmlFor="rating" className="text-2xl text-gray-500">평점</Label>
-                    <Input
-                        id="rating"
-                        type="number"
-                        step="0.1" 
-                        max="5.0"
-                        min="0.0"
-                        value={rating === 0 ? "" : rating}
-                        onChange={(e) => setRating(Number(e.target.value))}
-                        className="h-14 text-xl md:text-xl"
                     />
                 </div>
             </div>

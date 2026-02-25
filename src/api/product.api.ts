@@ -17,7 +17,6 @@ const createFormData = (data: ProductFormData): FormData => {
   formData.append("stock", data.stock.toString());
   formData.append("category", data.category);
   formData.append("description", data.description);
-  formData.append("rating", data.rating.toString());
 
   // 이미지가 있을 때만 추가
   if (data.imageFile) {
@@ -98,7 +97,7 @@ const createProductToMock = async (newProduct: ProductFormData): Promise<void> =
               100
           )
         : 0,
-    rating: newProduct.rating ?? 0,
+    rating: 0,
     reviewCount: 0,
     stock: newProduct.stock,
     shippingFee: 3000,
@@ -155,7 +154,6 @@ const updateProductToMock = async (productId: number, productData: ProductFormDa
     currentPrice: productData.currentPrice,
     originalPrice: productData.originalPrice,
     stock: productData.stock,
-    rating: productData.rating,
     category: productData.category,
 
     discountRate:
