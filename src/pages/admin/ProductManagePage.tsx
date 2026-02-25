@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
-import {useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Product, ProductFormData } from "@/types/product";
 import { ProductForm } from "@/components/admin/productForm";
 import { getProduct, createProduct, updateProduct} from "@/api/product.api";
+import { Loading } from "@/components/loading"
 
 export default function ProductManagePage() {
     const { id } = useParams<{ id: string }>();
@@ -39,9 +40,8 @@ export default function ProductManagePage() {
             queryClient.invalidateQueries({ queryKey: ["products"] });
             navigate("/admin/product"); // 상품 목록으로 이동
         },
-        onError: (error) => {
-            console.error(error);
-            alert("상품 등록에 실패했습니다.");
+        onError: (err) => {
+            alert("상품 등록에 실패했습니다." + err);
         }
     });
 
@@ -54,9 +54,8 @@ export default function ProductManagePage() {
             queryClient.invalidateQueries({ queryKey: ["product", productId] });
             navigate("/admin/product");
         },
-        onError: (error) => {
-            console.error(error);
-            alert("상품 수정에 실패했습니다.");
+        onError: (err) => {
+            alert("상품 수정에 실패했습니다: " + err);
         }
     });
 
@@ -69,7 +68,7 @@ export default function ProductManagePage() {
     };
 
     if (isEditMode && isLoading) {
-        return <div className="p-10 text-center text-gray-500 text-lg">상품 정보를 불러오는 중입니다...</div>;
+        return <Loading />;
     }
 
     if (isEditMode && isError) {
@@ -78,7 +77,8 @@ export default function ProductManagePage() {
     
     return (
         <div className="min-h-screen bg-gray-50 py-10 px-4">
-            <ProductForm 
+            <ProductForm
+                key={initialData ? 'loaded' : 'loading'}
                 initialData={initialData} 
                 onSubmit={handleSubmit} 
             />
