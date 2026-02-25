@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useQueryState, parseAsInteger, parseAsString } from 'nuqs';
 import { AdminItemList } from "@/components/admin/adminItemList";
 import { MOCK_PRODUCTS } from "@/mocks/data/products";
 import { STATUS_CONFIG, ProductStatus } from "@/types/product";
@@ -12,11 +13,10 @@ const FILTER_STATES = [
     ...(Object.entries(STATUS_CONFIG).map(([key, value]) => ({ id: key as ProductStatus, label: value.label, })))
 ]
 function AdminProductPage() {
-    const [selectedFilterId, setSelectedFilterId] = useState<string>("ALL");
-    const [searchWord, setSearchWord] = useState("");
-    const [activeSearchWord, setActiveSearchWord] = useState("");
-
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useQueryState("page", parseAsInteger.withDefault(1));
+    const [selectedFilterId, setSelectedFilterId] = useQueryState("status", parseAsString.withDefault("ALL"));
+    const [activeSearchWord, setActiveSearchWord] = useQueryState("keyword", parseAsString.withDefault(""));
+    const [searchWord, setSearchWord] = useState(activeSearchWord);
     const itemsPerPage = 5;
 
     const handleSearch = () => {
