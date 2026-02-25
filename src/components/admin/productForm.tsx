@@ -1,8 +1,16 @@
-import React, { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { 
+    Select, 
+    SelectContent, 
+    SelectItem, 
+    SelectTrigger, 
+    SelectValue 
+} from "@/components/ui/select";
+
 import { ProductFormData } from "@/types/product";
 import { ImageUploadPreview } from "@/components/admin/imageUploadPreview";
 
@@ -12,16 +20,28 @@ interface ProductFormProps {
     onSubmit: (data: ProductFormData) => void;
 }
 
+const CATEGORIES = [
+    { label: "컴퓨터/노트북 (Computer)", value: "computer" },
+    { label: "모바일/태블릿 (Mobile)", value: "mobile" },
+    { label: "음향기기 (Audio)", value: "audio" },
+    { label: "카메라 (Camera)", value: "camera" },
+    { label: "가전제품 (Home Appliance)", value: "home_appliance" },
+    { label: "주변기기/액세서리 (Accessories)", value: "accessories" },
+]
+
 export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
     const [name, setName] = useState(initialData?.name || "");
-    const [price, setPrice] = useState(initialData?.price || 0);
+    const [salePrice, setSalePrice] = useState(initialData?.salePrice || 0);
+    const [costPrice, setCostPrice] = useState(initialData?.costPrice || 0);
     const [stock, setStock] = useState(initialData?.stock || 0);
+    const [rating, setRating] = useState(initialData?.rating || 0);
+    const [category, setCategory] = useState(initialData?.category || "");
     const [description, setDescription] = useState(initialData?.description || "");
     const [imageFile, setImageFile] = useState<File | null>(null);
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        onSubmit({ name, price, stock, description, imageFile });
+        onSubmit({ name, salePrice, costPrice, stock, rating, category, description, imageFile });
     };
 
     return (
@@ -33,32 +53,65 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                 {initialData ? "상품 수정" : "상품 등록"}
             </h2>
 
-            <div className="space-y-3">
-                <Label htmlFor="name" className="text-2xl text-gray-500">상품명 <span className="text-pink-500">*</span></Label>
-                <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="예: 베이직 코튼 셔츠"
-                    className="h-14 text-xl md:text-xl"
-                    required
-                />
-            </div>
+            <div className="grid grid-cols-1 gap-6">
+                <div className="space-y-3">
+                    <Label htmlFor="name" className="text-2xl text-gray-500">상품명 <span className="text-pink-500">*</span></Label>
+                    <Input
+                        id="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="h-14 text-xl md:text-xl"
+                        required
+                    />
+                </div>
 
+                <div className="space-y-3">
+                    <Label htmlFor="category" className="text-2xl text-gray-500">카테고리 <span className="text-pink-500">*</span></Label>
+                    <Select required value={category} onValueChange={setCategory}>
+                        <SelectTrigger className="!h-14 w-full text-xl md:text-xl bg-white border-pink-300 focus-visible:border-pink-400 focus-visible:ring-pink-400/30 focus-visible:ring-[3px]">
+                            <SelectValue placeholder="카테고리 선택"/>
+                        </SelectTrigger>
+                        <SelectContent>    
+                            {CATEGORIES.map((cat) => (
+                                <SelectItem
+                                    key={cat.value}
+                                    value={cat.value}
+                                    className="text-lg py-3 cursor-pointer">
+                                    {cat.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+            
             <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-3">
-                    <Label htmlFor="price" className="text-2xl text-gray-500">가격 (원) <span className="text-pink-500">*</span></Label>
+                    <Label htmlFor="costPrice" className="text-2xl text-gray-500">원가 (원)</Label>
                     <Input
-                        id="price"
+                        id="costPrice"
                         type="number"
-                        value={price === 0 ? "" : price}
-                        onChange={(e) => setPrice(Number(e.target.value))}
-                        placeholder="0"
+                        value={costPrice === 0 ? "" : costPrice}
+                        onChange={(e) => setCostPrice(Number(e.target.value))}
+                        className="h-14 text-xl md:text-xl"
+                        min="0"
+                    />
+                </div>
+                <div className="space-y-3">
+                    <Label htmlFor="salePrice" className="text-2xl text-gray-500">판매가 (원) <span className="text-pink-500">*</span></Label>
+                    <Input
+                        id="salePrice"
+                        type="number"
+                        value={salePrice === 0 ? "" : salePrice}
+                        onChange={(e) => setSalePrice(Number(e.target.value))}
                         className="h-14 text-xl md:text-xl"
                         min="0"
                         required
                     />
                 </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-3">
                     <Label htmlFor="stock" className="text-2xl text-gray-500">재고 (개) <span className="text-pink-500">*</span></Label>
                     <Input
@@ -66,10 +119,22 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                         type="number"
                         value={stock === 0 ? "" : stock}
                         onChange={(e) => setStock(Number(e.target.value))}
-                        placeholder="0"
                         className="h-14 text-xl md:text-xl"
                         min="0"
                         required
+                    />
+                </div>
+                <div className="space-y-3">
+                    <Label htmlFor="rating" className="text-2xl text-gray-500">평점</Label>
+                    <Input
+                        id="rating"
+                        type="number"
+                        step="0.1" 
+                        max="5.0"
+                        min="0.0"
+                        value={rating}
+                        onChange={(e) => setRating(Number(e.target.value))}
+                        className="h-14 text-xl md:text-xl"
                     />
                 </div>
             </div>
