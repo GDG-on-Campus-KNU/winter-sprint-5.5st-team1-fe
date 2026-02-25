@@ -78,9 +78,38 @@ export const getProducts = async (): Promise<Product[]> => {
 };
 
 // 상품 등록
-const createProductToMock = async (_newProduct: ProductFormData): Promise<void> => {
-  void _newProduct;
+const createProductToMock = async (newProduct: ProductFormData): Promise<void> => {
   await mockDelay();
+
+  const newId = 
+    MOCK_PRODUCTS.length > 0 ? Math.max(...MOCK_PRODUCTS.map((p) => p.id)) + 1 : 1;
+
+  const product: Product = {
+    id: newId,
+    name: newProduct.name,
+    description: newProduct.description,
+    currentPrice: newProduct.currentPrice,
+    originalPrice: newProduct.originalPrice,
+    discountRate:
+      newProduct.originalPrice > 0
+        ? Math.round(
+            ((newProduct.originalPrice - newProduct.currentPrice) /
+              newProduct.originalPrice) *
+              100
+          )
+        : 0,
+    rating: newProduct.rating ?? 0,
+    reviewCount: 0,
+    stock: newProduct.stock,
+    shippingFee: 3000,
+    freeShippingThreshold: 50000,
+    imageUrl: newProduct.imageFile
+      ? URL.createObjectURL(newProduct.imageFile)
+      : newProduct.imageUrl ?? "",
+    category: newProduct.category,
+  };
+
+  MOCK_PRODUCTS.push(product);
 }
 
 const createProductToAPI = async (newProduct: ProductFormData): Promise<void> => {
@@ -105,10 +134,45 @@ export const createProduct = async (newProduct: ProductFormData): Promise<void> 
 };
 
 // 상품 수정
-const updateProductToMock = async (_productId: number, _productData: ProductFormData): Promise<void> => {
-  void _productId;
-  void _productData;
+const updateProductToMock = async (productId: number, productData: ProductFormData): Promise<void> => {
   await mockDelay();
+
+    const index = MOCK_PRODUCTS.findIndex(
+    (product) => product.id === productId
+  );
+
+  if (index === -1) {
+    throw new Error("수정할 상품을 찾을 수 없습니다.");
+  }
+
+  const existingProduct = MOCK_PRODUCTS[index];
+
+  const updatedProduct: Product = {
+    ...existingProduct,
+
+    name: productData.name,
+    description: productData.description,
+    currentPrice: productData.currentPrice,
+    originalPrice: productData.originalPrice,
+    stock: productData.stock,
+    rating: productData.rating,
+    category: productData.category,
+
+    discountRate:
+      productData.originalPrice > 0
+        ? Math.round(
+            ((productData.originalPrice - productData.currentPrice) /
+              productData.originalPrice) *
+              100
+          )
+        : 0,
+
+    imageUrl: productData.imageFile
+      ? URL.createObjectURL(productData.imageFile)
+      : productData.imageUrl ?? existingProduct.imageUrl,
+  };
+
+  MOCK_PRODUCTS[index] = updatedProduct;
 };
 
 const updateProductToAPI = async (productId: number, productData: ProductFormData): Promise<void> => {
