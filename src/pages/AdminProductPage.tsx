@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { AdminItemCard } from "@/components/cards/admin/adminItemCard";
+import { AdminItemList } from "@/components/cards/admin/adminItemList";
 import { MOCK_PRODUCTS } from "@/mocks/data/products";
 import { STATUS_CONFIG, ProductStatus } from "@/types/product";
 import { BadgePlus, Search, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from "lucide-react";
@@ -116,7 +116,7 @@ function AdminProductPage() {
                     )}
                 </div>
             </div>
-            <AdminItemCard items={currentDisplayItems} />
+            <AdminItemList items={currentDisplayItems} />
             {totalPages > 0 && (
                 <div className="flex items-center justify-center gap-4 mt-10">
                     <button
