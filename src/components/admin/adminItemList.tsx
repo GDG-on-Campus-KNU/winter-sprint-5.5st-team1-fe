@@ -23,12 +23,13 @@ export function AdminItemList({ items }: AdminItemListProps) {
                         <div className="w-40 py-4 flex items-center justify-center">관리</div>
                     </div>
                     {items.length > 0 ? (
-                        <ul className="flex flex-col w-full p-0 m-0">
+                        <ul className="flex flex-col w-full p-0 m-0 list-none">
                             {items.map((product) => (
-                                <AdminItem
-                                    key={product.id}
-                                    item={product}
-                                />
+                                <li key={product.id} className="w-full border-b border-gray-200 [&:nth-child(5)]:border-none">
+                                    <AdminItem
+                                        item={product}
+                                    />
+                                </li>
                             ))}
                         </ul>
                     ) : (
