@@ -15,6 +15,7 @@ export function AdminItemList({ items }: AdminItemListProps) {
                     <div className="flex w-full border-b border-gray-200 text-[28px] font-semibold text-gray-500 divide-x divide-gray-200 items-stretch">
                         <div className="w-48 py-4 flex items-center justify-center">이미지</div>
                         <div className="flex-1 min-w-[240px] py-4 flex items-center justify-center">상품명</div>
+                        <div className="w-60 py-4 flex items-center justify-center">카테고리</div>
                         <div className="w-60 py-4 flex items-center justify-center">가격</div>
                         <div className="w-32 py-4 flex items-center justify-center">재고</div>
                         <div className="w-72 py-4 flex items-center justify-center">평점</div>

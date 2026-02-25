@@ -25,6 +25,11 @@ export function AdminItem({ item }: AdminItemProps) {
                     </h4>
                     <Badge className="bg-red" percentage={item.discountRate} />
                 </div>
+                <div className="flex justify-center items-center w-60">
+                    <h4 className="text-[24px] font-medium text-gray-500 truncate">
+                        {item.category}
+                    </h4>
+                </div>
                 <div className="flex min-w-0 overflow-hidden">
                     <div className="flex pl-8 flex-col w-60 pl-8 justify-center">
                         <span className="text-pink-500 font-semibold text-[24px]">
