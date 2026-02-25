@@ -1,5 +1,5 @@
-import { Badge } from "../../badge";
-import { ProductRating } from "../../product/ProductRating";
+import { Badge } from "@/components/badge";
+import { ProductRating } from "@/components/product/ProductRating";
 import { Pencil } from "lucide-react";
 import { Trash } from "lucide-react";
 import { Product } from "@/types/product";
