@@ -1,11 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/layouts/MainLayout";
-import HomePage from "./pages/home/HomePage"
+import HomePage from "./pages/home/HomePage";
 import ProductPage from "./pages/product/ProductPage";
 import ProductDetailPage from "./pages/product/ProductDetailPage";
 import OrderPage from "./pages/OrderPage";
 import OrderCompletePage from "./pages/order/OrderCompletePage";
 import ProductManagePage from "./pages/admin/ProductManagePage";
+import CartPage from "./pages/CartPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/products/:id" element={<ProductDetailPage />} />
           <Route path="/order" element={<OrderPage />} />
           <Route path="/order/complete/:orderId" element={<OrderCompletePage />} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="/admin/products/:id" element={<ProductManagePage />} />
         </Route>
       </Routes>
