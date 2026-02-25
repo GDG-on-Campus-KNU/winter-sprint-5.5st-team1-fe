@@ -40,7 +40,7 @@ export function ImageUploadPreview({ initialImageUrl, onImageSelect }: ImageUplo
     };
 
     return (
-        <div className="w-full">
+        <div className="w-full flex justify-center">
             <input
                 type="file"
                 accept="image/*"
@@ -50,7 +50,7 @@ export function ImageUploadPreview({ initialImageUrl, onImageSelect }: ImageUplo
             />
 
             {previewUrl ? (
-                <div className="relative w-full h-64 rounded-md border border-gray-200 overflow-hidden group shadow-xs">
+                <div className="relative w-full max-w-[300px] aspect-square rounded-md border border-gray-200 overflow-hidden group shadow-xs">
                     <img 
                         src={previewUrl} 
                         alt="미리보기" 
@@ -60,7 +60,7 @@ export function ImageUploadPreview({ initialImageUrl, onImageSelect }: ImageUplo
                     <Button
                         type="button"
                         onClick={handleRemoveImage}
-                        className="absolute top-2 right-2 p-1.5 bg-white/80 hover:bg-white text-gray-600 rounded-full shadow-sm transition-all"
+                        className="absolute top-2 right-2 p-1.5 bg-white/80 hover:bg-white text-gray-500 rounded-full shadow-sm transition-all"
                     >
                         <X className="w-5 h-5" />
                     </Button>
@@ -68,7 +68,7 @@ export function ImageUploadPreview({ initialImageUrl, onImageSelect }: ImageUplo
             ) : (
                 <div 
                     onClick={() => fileInputRef.current?.click()} 
-                    className="w-full h-64 rounded-md border-2 border-dashed border-pink-300 bg-gray-50 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-gray-100 hover:border-pink-400 transition-colors shadow-xs"
+                    className="w-full max-w-[300px] aspect-square rounded-md border-2 border-dashed border-pink-300 bg-gray-50 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-gray-100 hover:border-pink-400 transition-colors shadow-xs"
                 >
                     <div className="p-4 bg-white rounded-full shadow-sm">
                         <ImagePlus className="w-8 h-8 text-pink-500" />
