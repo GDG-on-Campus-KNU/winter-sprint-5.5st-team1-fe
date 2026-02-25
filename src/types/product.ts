@@ -16,8 +16,8 @@ export interface Product {
 
 export interface ProductFormData {
   name: string;
-  salePrice: number;
-  costPrice: number; // 원가
+  currentPrice: number;
+  originalPrice: number; // 원가
   stock: number;
   rating: number;
   category: string;
