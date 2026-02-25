@@ -1,74 +1,81 @@
-import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ProductFormData } from "@/types/product";
+import {useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Product, ProductFormData } from "@/types/product";
 import { ProductForm } from "@/components/admin/productForm";
+import { getProduct, createProduct, updateProduct} from "@/api/product.api";
 
 export default function ProductManagePage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
-    const isEditMode = id !== "new"; 
-    const [initialData, setInitialData] = useState<ProductFormData | undefined>(undefined);
-    const [isLoading, setIsLoading] = useState(isEditMode);
+    const isEditMode = id !== "new";
+    const productId = Number(id);
+    
+    // 데이터 조회
+    const { data: initialData, isLoading, isError } = useQuery({
+        queryKey: ["product", productId],
+        queryFn: () => getProduct(productId),
+        enabled: isEditMode, // 수정 모드일 때만 실행
 
-    useEffect(() => {
-        if (isEditMode) {
-            const fetchProduct = async () => {
-                try {
-                    // 테스트용 데이터
-                    setInitialData({
-                        name: "게이밍 노트북",
-                        salePrice: 1500000,
-                        costPrice: 1200000,
-                        stock: 10,
-                        category: "computer",
-                        rating: 4.8,
-                        description: "GOOD",
-                        imageUrl: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=800&q=80"
-                    });
-                } catch (error) {
-                    console.error("상품을 불러오지 못했습니다.", error);
-                    alert("상품 정보를 불러오는데 실패했습니다.");
-                    navigate("/admin/products"); // 목록으로 돌려보냄
-                } finally {
-                    setIsLoading(false);
-                }
-            };
-            fetchProduct();
+        select: (data: Product): ProductFormData => ({
+            name: data.name,
+            currentPrice: data.currentPrice,
+            originalPrice: data.originalPrice,
+            stock: data.stock,
+            rating: data.rating,
+            category: data.category,
+            description: data.description,
+            imageUrl: data.imageUrl,
+            imageFile: null,
+        }),
+    });
+
+    // 상품 등록
+    const createMutation = useMutation({
+        mutationFn: (newData: ProductFormData) => createProduct(newData),
+        onSuccess: () => {
+            alert("상품이 성공적으로 등록되었습니다!");
+            queryClient.invalidateQueries({ queryKey: ["products"] });
+            navigate("/admin/product"); // 상품 목록으로 이동
+        },
+        onError: (error) => {
+            console.error(error);
+            alert("상품 등록에 실패했습니다.");
         }
-    }, [id, isEditMode, navigate]);
+    });
+
+    // 상품 수정
+    const updateMutation = useMutation({
+        mutationFn: (data: ProductFormData) => updateProduct(productId, data),
+        onSuccess: () => {
+            alert("상품이 성공적으로 수정되었습니다!");
+            queryClient.invalidateQueries({ queryKey: ["products"] });
+            queryClient.invalidateQueries({ queryKey: ["product", productId] });
+            navigate("/admin/product");
+        },
+        onError: (error) => {
+            console.error(error);
+            alert("상품 수정에 실패했습니다.");
+        }
+    });
 
     const handleSubmit = async (formData: ProductFormData) => {
-        try {
-            const submitData = new FormData();
-
-            submitData.append("name", formData.name);
-            submitData.append("salePrice", formData.salePrice.toString());
-            submitData.append("costPrice", formData.costPrice.toString());
-            submitData.append("stock", formData.stock.toString());
-            submitData.append("rating", formData.rating.toString());
-            submitData.append("category", formData.category);
-            submitData.append("description", formData.description);
-            if (formData.imageFile) {
-                submitData.append("image", formData.imageFile); // 키 값은 백엔드 API 명세에 맞게 조정
-            }
-            
-            if (isEditMode) {
-                // 수정 API 호출
-                alert("상품이 성공적으로 수정되었습니다!");
-            } else {
-                // 등록 API 호출
-                alert("새 상품이 성공적으로 등록되었습니다!");
-            }
-            navigate("/admin/products"); // 상품 목록으로 이동
-        } catch (error) {
-            console.error("저장 실패:", error);
-            alert("저장에 실패했습니다.");
+        if (isEditMode) {
+            updateMutation.mutate(formData);
+        } else {
+            createMutation.mutate(formData);
         }
     };
 
-    if (isLoading) return <div className="p-10 text-center text-gray-500 text-lg">상품 정보를 불러오는 중입니다...</div>;
+    if (isEditMode && isLoading) {
+        return <div className="p-10 text-center text-gray-500 text-lg">상품 정보를 불러오는 중입니다...</div>;
+    }
 
+    if (isEditMode && isError) {
+        return <div className="p-10 text-center text-red-500">상품 정보를 불러오는데 실패했습니다.</div>;
+}
+    
     return (
         <div className="min-h-screen bg-gray-50 py-10 px-4">
             <ProductForm 

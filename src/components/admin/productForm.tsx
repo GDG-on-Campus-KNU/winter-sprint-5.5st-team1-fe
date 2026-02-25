@@ -3,14 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-    Select, 
-    SelectContent, 
-    SelectItem, 
-    SelectTrigger, 
-    SelectValue 
-} from "@/components/ui/select";
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ProductFormData } from "@/types/product";
 import { ImageUploadPreview } from "@/components/admin/imageUploadPreview";
 
@@ -31,8 +24,8 @@ const CATEGORIES = [
 
 export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
     const [name, setName] = useState(initialData?.name || "");
-    const [salePrice, setSalePrice] = useState(initialData?.salePrice || 0);
-    const [costPrice, setCostPrice] = useState(initialData?.costPrice || 0);
+    const [currentPrice, setCurrentPrice] = useState(initialData?.currentPrice || 0);
+    const [originalPrice, setOriginalPrice] = useState(initialData?.originalPrice || 0);
     const [stock, setStock] = useState(initialData?.stock || 0);
     const [rating, setRating] = useState(initialData?.rating || 0);
     const [category, setCategory] = useState(initialData?.category || "");
@@ -41,7 +34,7 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        onSubmit({ name, salePrice, costPrice, stock, rating, category, description, imageFile });
+        onSubmit({ name, currentPrice, originalPrice, stock, rating, category, description, imageFile });
     };
 
     return (
@@ -89,21 +82,21 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                 <div className="space-y-3">
                     <Label htmlFor="costPrice" className="text-2xl text-gray-500">원가 (원)</Label>
                     <Input
-                        id="costPrice"
+                        id="originalPrice"
                         type="number"
-                        value={costPrice === 0 ? "" : costPrice}
-                        onChange={(e) => setCostPrice(Number(e.target.value))}
+                        value={originalPrice === 0 ? "" : originalPrice}
+                        onChange={(e) => setOriginalPrice(Number(e.target.value))}
                         className="h-14 text-xl md:text-xl"
                         min="0"
                     />
                 </div>
                 <div className="space-y-3">
-                    <Label htmlFor="salePrice" className="text-2xl text-gray-500">판매가 (원) <span className="text-pink-500">*</span></Label>
+                    <Label htmlFor="currentPrice" className="text-2xl text-gray-500">판매가 (원) <span className="text-pink-500">*</span></Label>
                     <Input
-                        id="salePrice"
+                        id="currentPrice"
                         type="number"
-                        value={salePrice === 0 ? "" : salePrice}
-                        onChange={(e) => setSalePrice(Number(e.target.value))}
+                        value={currentPrice === 0 ? "" : currentPrice}
+                        onChange={(e) => setCurrentPrice(Number(e.target.value))}
                         className="h-14 text-xl md:text-xl"
                         min="0"
                         required
@@ -132,7 +125,7 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                         step="0.1" 
                         max="5.0"
                         min="0.0"
-                        value={rating}
+                        value={rating === 0 ? "" : rating}
                         onChange={(e) => setRating(Number(e.target.value))}
                         className="h-14 text-xl md:text-xl"
                     />
