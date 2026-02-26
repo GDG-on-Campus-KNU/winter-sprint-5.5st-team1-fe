@@ -7,6 +7,8 @@ import OrderPage from "./pages/order/OrderPage";
 import OrderCompletePage from "./pages/order/OrderCompletePage";
 import CartPage from "./pages/CartPage";
 import ManagePage from "./pages/AdminProductPage";
+import MyPage from "./pages/MyPage";
+import Private from "./components/private";
 
 function App() {
   return (
@@ -21,8 +23,23 @@ function App() {
             path="/order/complete/:orderId"
             element={<OrderCompletePage />}
           />
-          <Route path="/cart" element={<CartPage />} />
           <Route path="/admin/product" element={<ManagePage />} />
+          <Route
+            path="/mypage"
+            element={
+              <Private>
+                <MyPage />
+              </Private>
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <Private>
+                <CartPage />
+              </Private>
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>

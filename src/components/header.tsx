@@ -8,30 +8,39 @@ import {
 import { Link } from "react-router-dom";
 import { useCartStore } from "@/stores/cart.store";
 
-type UserRole = "user" | "admin"; // 비로그인 상태일 경우 null
+type UserRole = "user" | "admin";
 
 interface User {
   role: UserRole;
 }
 
 export default function Header() {
-  //const user: User | null = null; // 비로그인 상태
-  const user: User | null = { role: "user" }; // 일반 사용자 로그인 상태
-  //const user: User | null = { role: "admin" }; // 관리자 로그인 상태
+  const user: User | null = { role: "user" };
   const itemCount = useCartStore((state) => state.itemCount);
+
+  const isLoggedIn = !!localStorage.getItem("authToken");
 
   return (
     <header className="flex h-20 w-full items-center justify-between bg-pink-500 px-8 text-white">
-      <div className="flex items-center gap-2 font-semibold text-[28px]">
-        <Store className="w-8 h-8"></Store>
+      <Link
+        to="/"
+        className="flex items-center gap-2 font-semibold text-[28px]"
+      >
+        <Store className="w-8 h-8" />
         전자상거래 데모
-      </div>
+      </Link>
+
       {!user && (
         <div className="flex items-center gap-8 font-medium text-[24px]">
-          <button className="flex items-center">로그인</button>
-          <button className="flex items-center">회원가입</button>
+          <Link to="/login" className="flex items-center">
+            로그인
+          </Link>
+          <Link to="/signup-page" className="flex items-center">
+            회원가입
+          </Link>
         </div>
       )}
+
       {user?.role === "user" && (
         <div className="flex items-center gap-6 font-medium text-[24px]">
           <Link to="/cart" className="flex items-center gap-2">
@@ -43,28 +52,41 @@ export default function Header() {
               </span>
             )}
           </Link>
-          <button className="flex items-center gap-2">
-            <LogOut className="w-7 h-7"></LogOut>
+          <button
+            className="flex items-center gap-2"
+            onClick={() => {
+              localStorage.removeItem("authToken");
+              window.location.href = "/login";
+            }}
+          >
+            <LogOut className="w-7 h-7" />
             로그아웃
           </button>
-          <button className="flex items-center gap-2">
-            <CircleUserRound className="w-7 h-7"></CircleUserRound>
+          <Link to="/mypage" className="flex items-center gap-2">
+            <CircleUserRound className="w-7 h-7" />
             마이페이지
-          </button>
+          </Link>
         </div>
       )}
+
       {user?.role === "admin" && (
         <div className="flex items-center gap-6 font-medium text-[24px]">
           <button className="flex items-center gap-2">
-            <ScrollText className="w-7 h-7"></ScrollText>
+            <ScrollText className="w-7 h-7" />
             상품 관리
           </button>
-          <button className="flex items-center gap-2">
-            <LogOut className="w-7 h-7"></LogOut>
+          <button
+            className="flex items-center gap-2"
+            onClick={() => {
+              localStorage.removeItem("authToken");
+              window.location.href = "/login";
+            }}
+          >
+            <LogOut className="w-7 h-7" />
             로그아웃
           </button>
           <div className="flex items-center gap-2">
-            <CircleUserRound className="w-7 h-7"></CircleUserRound>
+            <CircleUserRound className="w-7 h-7" />
             관리자
           </div>
         </div>
