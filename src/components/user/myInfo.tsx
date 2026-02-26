@@ -1,5 +1,5 @@
 import { useMyInfo } from "@/hooks/useMyPage";
-import { User, Mail, Phone, MapPin, Calendar } from "lucide-react";
+import { User, Mail, Phone, MapPin, Calendar, Pencil } from "lucide-react";
 import { Loading } from "@/components/loading";
 
 export default function MyInfo() {
@@ -52,6 +52,18 @@ export default function MyInfo() {
             <span className="text-[15px] font-medium">{value}</span>
           </div>
         ))}
+      </div>
+
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={() => {
+            /* TODO: 수정 모드 */
+          }}
+          className="flex items-center gap-2 rounded-xl bg-pink-400 px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:bg-pink-500"
+        >
+          <Pencil className="h-4 w-4" />
+          수정하기
+        </button>
       </div>
     </div>
   );
