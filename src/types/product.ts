@@ -1,4 +1,11 @@
 export type ProductStatus = "ACTIVE" | "INACTIVE" | "SOLD_OUT" | "DELETED";
+export type ProductCategory = 
+  | "computer"
+  | "mobile"
+  | "audio"
+  | "camera"
+  | "home_appliance"
+  | "accessories";
 
 export const STATUS_CONFIG: Record<
   ProductStatus,
@@ -22,16 +29,24 @@ export interface Product {
   shippingFee: number;
   freeShippingThreshold: number;
   imageUrl: string;
-  category: string;
+  category: ProductCategory;
   status: ProductStatus;
 }
 
+export const CATEGORY_CONFIG: Record<ProductCategory, { label: string }> = {
+  computer: { label: "컴퓨터/노트북 (Computer)" },
+  mobile: { label: "모바일/태블릿 (Mobile)" },
+  audio: { label: "음향기기 (Audio)" },
+  camera: { label: "카메라 (Camera)" },
+  home_appliance: { label: "가전제품 (Home Appliance)" },
+  accessories: { label: "주변기기/액세서리 (Accessories)" },
+} as const;
 export interface ProductFormData {
   name: string;
   currentPrice: number;
   originalPrice: number; // 원가
   stock: number;
-  category: string;
+  category: ProductCategory;
   description: string;
   imageFile?: File | null; // 새로 선택된 이미지 파일
   imageUrl?: string; // 기존 이미지 URL (수정 시에만 사용)

@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ProductFormData, STATUS_CONFIG, ProductStatus } from "@/types/product";
+import { ProductFormData, STATUS_CONFIG, ProductStatus, CATEGORY_CONFIG, ProductCategory } from "@/types/product";
 import { ImageUploadPreview } from "@/components/admin/imageUploadPreview";
 
 interface ProductFormProps {
@@ -13,31 +13,24 @@ interface ProductFormProps {
     onSubmit: (data: ProductFormData) => void;
 }
 
-const CATEGORIES = [
-    { label: "컴퓨터/노트북 (Computer)", value: "computer" },
-    { label: "모바일/태블릿 (Mobile)", value: "mobile" },
-    { label: "음향기기 (Audio)", value: "audio" },
-    { label: "카메라 (Camera)", value: "camera" },
-    { label: "가전제품 (Home Appliance)", value: "home_appliance" },
-    { label: "주변기기/액세서리 (Accessories)", value: "accessories" },
-]
-
 export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
     const [name, setName] = useState(initialData?.name || "");
     const [currentPrice, setCurrentPrice] = useState(initialData?.currentPrice || 0);
     const [originalPrice, setOriginalPrice] = useState(initialData?.originalPrice || 0);
     const [stock, setStock] = useState(initialData?.stock || 0);
-    const [category, setCategory] = useState(initialData?.category || "");
+    const [category, setCategory] = useState<ProductCategory | "">(initialData?.category || "");
     const [status, setStatus] = useState<ProductStatus>(initialData?.status || "ACTIVE");
     const [description, setDescription] = useState(initialData?.description || "");
     const [imageFile, setImageFile] = useState<File | null>(null);
+    
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
+
         if (!category) {
             alert("카테고리를 선택해 주세요.");
             return;
         }
-        
+
         onSubmit({
             name,
             currentPrice,
@@ -87,17 +80,17 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                     </div>
                     <div className="space-y-3">
                         <Label htmlFor="category" className="text-xl font-medium text-gray-400">카테고리 <span className="text-pink-500">*</span></Label>
-                        <Select required value={category} onValueChange={setCategory}>
+                        <Select required value={category} onValueChange={(val) => setCategory(val as ProductCategory)}>
                             <SelectTrigger className="!h-12 w-full text-lg bg-white border-pink-300 focus-visible:border-pink-400 focus-visible:ring-pink-400/30 focus-visible:ring-[3px]">
                                 <SelectValue placeholder="카테고리 선택" />
                             </SelectTrigger>
                             <SelectContent>
-                                {CATEGORIES.map((cat) => (
+                                {(Object.entries(CATEGORY_CONFIG) as [ProductCategory, { label: string }][]).map(([key, config]) => (
                                     <SelectItem
-                                        key={cat.value}
-                                        value={cat.value}
+                                        key={key}
+                                        value={key}
                                         className="text-base py-2.5 cursor-pointer">
-                                        {cat.label}
+                                        {config.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
