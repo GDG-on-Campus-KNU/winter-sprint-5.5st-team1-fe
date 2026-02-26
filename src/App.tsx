@@ -24,14 +24,7 @@ function App() {
             element={<OrderCompletePage />}
           />
           <Route path="/admin/product" element={<ManagePage />} />
-          <Route
-            path="/mypage"
-            element={
-              <Private>
-                <MyPage />
-              </Private>
-            }
-          />
+          <Route path="/mypage" element={<MyPage />} />
           <Route
             path="/cart"
             element={
