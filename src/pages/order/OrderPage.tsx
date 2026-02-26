@@ -8,7 +8,7 @@ import { MOCK_COUPONS } from "@/mocks/data/coupons";
 import { getAvailableCoupons } from "@/utils/coupon";
 import { CouponCard } from "@/components/cards/couponCard";
 import { OrderSummaryCard } from "@/components/cards/order/orderSummaryCard";
-import { OrderItemCard } from "@/components/cards/order/orderItemCard";
+import { OrderItemList } from "@/components/cards/order/orderItemList";
 import { MOCK_CART_ITEMS } from "@/mocks/data/cartItems";
 import { X } from "lucide-react";
 
@@ -110,7 +110,7 @@ function OrderPage() {
                         </Card>
                     </div>
                     <aside className="w-[470px] flex-shrink-0 flex flex-col gap-10 sticky top-10">
-                        <OrderItemCard items={items} />
+                        <OrderItemList items={items} />
                         <OrderSummaryCard
                             subtotal={subtotal}
                             shipping={shipping}

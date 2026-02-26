@@ -1,5 +1,5 @@
-import { Badge } from "../../badge";
-import { ProductRating } from "../../product/ProductRating";
+import { Badge } from "@/components/badge";
+import { ProductRating } from "@/components/product/ProductRating";
 import { Pencil } from "lucide-react";
 import { Trash } from "lucide-react";
 import { Product } from "@/types/product";
@@ -7,13 +7,12 @@ import { STATUS_CONFIG } from "@/types/product";
 
 interface AdminItemProps {
     item: Product;
-    isLast?: boolean;
 }
 
-export function AdminItem({ item, isLast }: AdminItemProps) {
+export function AdminItem({ item }: AdminItemProps) {
     const config = STATUS_CONFIG[item.status];
     return (
-        <div className={`flex w-full items-stretch divide-x border-b divide-gray-200 border-gray-200 py-6 ${isLast ? "border-b=0" : "border-b"}`}>
+        <article className="flex w-full items-stretch divide-x divide-gray-200 py-6">
             <div className="w-48 flex items-center justify-center">
                 <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 border border-gray-100 bg-gray-50">
                     <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
@@ -25,6 +24,11 @@ export function AdminItem({ item, isLast }: AdminItemProps) {
                 </h4>
                 <Badge className="bg-red" percentage={item.discountRate} />
             </div>
+            <div className="flex justify-center items-center w-60">
+                <h4 className="text-[24px] font-medium text-gray-500 truncate">
+                    {item.category}
+                </h4>
+            </div>
             <div className="flex min-w-0 overflow-hidden">
                 <div className="flex pl-8 flex-col w-60 pl-8 justify-center">
                     <span className="text-pink-500 font-semibold text-[24px]">
@@ -34,7 +38,6 @@ export function AdminItem({ item, isLast }: AdminItemProps) {
                         ₩{item.originalPrice.toLocaleString()}
                     </span>
                 </div>
-
             </div>
             <div className="flex justify-center items-center w-32">
                 <Badge className="bg-pink-500">
@@ -57,7 +60,6 @@ export function AdminItem({ item, isLast }: AdminItemProps) {
                     </button>
                 </div>
             </div>
-        </div>
+        </article>
     )
-
 }
