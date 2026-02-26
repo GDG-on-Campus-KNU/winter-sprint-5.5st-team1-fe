@@ -73,7 +73,7 @@ export default function ProductManagePage() {
 
     if (isEditMode && isError) {
         return <div className="p-10 text-center text-red-500">상품 정보를 불러오는데 실패했습니다.</div>;
-}
+    }
     
     return (
         <div className="min-h-screen bg-gray-50 py-10 px-4">
