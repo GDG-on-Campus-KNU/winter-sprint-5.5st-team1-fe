@@ -18,7 +18,6 @@ export default function Header() {
   const user: User | null = { role: "user" };
   const itemCount = useCartStore((state) => state.itemCount);
 
-  const isLoggedIn = !!localStorage.getItem("authToken");
 
   return (
     <header className="flex h-20 w-full items-center justify-between bg-pink-500 px-8 text-white">
