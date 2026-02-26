@@ -102,10 +102,11 @@ const createProductToMock = async (newProduct: ProductFormData): Promise<void> =
     stock: newProduct.stock,
     shippingFee: 3000,
     freeShippingThreshold: 50000,
+    category: newProduct.category,
+    status: newProduct.status,
     imageUrl: newProduct.imageFile
       ? URL.createObjectURL(newProduct.imageFile)
       : newProduct.imageUrl ?? "",
-    category: newProduct.category,
   };
 
   MOCK_PRODUCTS.push(product);
@@ -155,7 +156,7 @@ const updateProductToMock = async (productId: number, productData: ProductFormDa
     originalPrice: productData.originalPrice,
     stock: productData.stock,
     category: productData.category,
-
+    status: productData.status,
     discountRate:
       productData.originalPrice > 0
         ? Math.round(
@@ -164,12 +165,10 @@ const updateProductToMock = async (productId: number, productData: ProductFormDa
               100
           )
         : 0,
-
     imageUrl: productData.imageFile
       ? URL.createObjectURL(productData.imageFile)
       : productData.imageUrl ?? existingProduct.imageUrl,
   };
-
   MOCK_PRODUCTS[index] = updatedProduct;
 };
 

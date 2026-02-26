@@ -26,6 +26,7 @@ export default function ProductManagePage() {
             stock: data.stock,
             category: data.category,
             description: data.description,
+            status: data.status,
             imageUrl: data.imageUrl,
             imageFile: null,
         }),
