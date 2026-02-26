@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import App from './App.tsx'
 import './styles/global.css'
+import { NuqsAdapter } from 'nuqs/adapters/react-router'
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <BrowserRouter>
-        <App />
+        <NuqsAdapter>
+          <App />
+        </NuqsAdapter>
       </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>
