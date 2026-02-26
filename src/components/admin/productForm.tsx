@@ -33,7 +33,11 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
     const [imageFile, setImageFile] = useState<File | null>(null);
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-
+        if (!category) {
+            alert("카테고리를 선택해 주세요.");
+            return;
+        }
+        
         onSubmit({
             name,
             currentPrice,
