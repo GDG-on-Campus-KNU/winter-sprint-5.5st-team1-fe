@@ -2,14 +2,24 @@ import { useState } from "react";
 import { useMyCoupons } from "@/hooks/useMyPage";
 import { Ticket } from "lucide-react";
 import { Loading } from "@/components/loading";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function MyCoupons() {
   const { data: coupons = [], isLoading } = useMyCoupons();
   const [tab, setTab] = useState<"available" | "used">("available");
+  const [couponCode, setCouponCode] = useState("");
 
   const filtered = coupons.filter((c) =>
     tab === "available" ? c.available : !c.available,
   );
+
+  const handleRegisterCoupon = () => {
+    if (!couponCode.trim()) return;
+    // TODO: API 연결
+    console.log("등록할 쿠폰 코드:", couponCode);
+    setCouponCode("");
+  };
 
   if (isLoading) {
     return <Loading />;
@@ -18,6 +28,25 @@ export default function MyCoupons() {
   return (
     <div>
       <h2 className="text-[24px] font-bold text-gray-500 mb-6">내 쿠폰함</h2>
+
+      <div className="mb-6 flex gap-2">
+        <Input
+          value={couponCode}
+          onChange={(e) => setCouponCode(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleRegisterCoupon()}
+          placeholder="쿠폰 번호를 입력하세요"
+          className="h-11 rounded-xl text-[14px]"
+        />
+        <Button
+          onClick={handleRegisterCoupon}
+          disabled={!couponCode.trim()}
+          size="default"
+          className="rounded-xl text-[14px]"
+        >
+          등록
+        </Button>
+      </div>
+
       <div className="mb-4 flex rounded-2xl bg-gray-100 p-1">
         {(["available", "used"] as const).map((t) => (
           <button
@@ -30,18 +59,15 @@ export default function MyCoupons() {
             {t === "available" ? "사용 가능" : "사용 완료"}
             <span className="ml-1 text-[13px]">
               (
-              {
-                coupons.filter((c) =>
-                  t === "available" ? c.available : !c.available,
-                ).length
-              }
+              {coupons.filter((c) =>
+                t === "available" ? c.available : !c.available,
+              ).length}
               )
             </span>
           </button>
         ))}
       </div>
 
-      {/* 쿠폰 목록 */}
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center gap-2 py-20 text-gray-300">
           <Ticket className="h-12 w-12" />
