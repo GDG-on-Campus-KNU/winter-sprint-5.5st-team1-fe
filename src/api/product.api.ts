@@ -1,4 +1,4 @@
-import { Product } from "../types/product";
+import { Product, ProductFormData } from "@/types/product";
 import { MOCK_PRODUCTS, getProductById } from "@/mocks/data/products";
 
 // Mock 모드 (백엔드 준비되면 false로 변경)
@@ -6,6 +6,24 @@ const USE_MOCK = true;
 
 const mockDelay = (ms = 500): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+const createFormData = (data: ProductFormData): FormData => {
+  const formData = new FormData();
+  
+  formData.append("name", data.name);
+  formData.append("currentPrice", data.currentPrice.toString());
+  formData.append("originalPrice", data.originalPrice.toString());
+  formData.append("stock", data.stock.toString());
+  formData.append("category", data.category);
+  formData.append("description", data.description);
+
+  // 이미지가 있을 때만 추가
+  if (data.imageFile) {
+    formData.append("image", data.imageFile); 
+  }
+  
+  return formData;
 };
 
 const fetchProductFromMock = async (productId: number): Promise<Product> => {
@@ -55,5 +73,122 @@ export const getProducts = async (): Promise<Product[]> => {
     return fetchProductsFromMock();
   } else {
     return fetchProductsFromAPI();
+  }
+};
+
+// 상품 등록
+const createProductToMock = async (newProduct: ProductFormData): Promise<void> => {
+  await mockDelay();
+
+  const newId = 
+    MOCK_PRODUCTS.length > 0 ? Math.max(...MOCK_PRODUCTS.map((p) => p.id)) + 1 : 1;
+
+  const product: Product = {
+    id: newId,
+    name: newProduct.name,
+    description: newProduct.description,
+    currentPrice: newProduct.currentPrice,
+    originalPrice: newProduct.originalPrice,
+    discountRate:
+      newProduct.originalPrice > 0
+        ? Math.round(
+            ((newProduct.originalPrice - newProduct.currentPrice) /
+              newProduct.originalPrice) *
+              100
+          )
+        : 0,
+    rating: 0,
+    reviewCount: 0,
+    stock: newProduct.stock,
+    shippingFee: 3000,
+    freeShippingThreshold: 50000,
+    category: newProduct.category,
+    status: newProduct.status,
+    imageUrl: newProduct.imageFile
+      ? URL.createObjectURL(newProduct.imageFile)
+      : newProduct.imageUrl ?? "",
+  };
+
+  MOCK_PRODUCTS.push(product);
+}
+
+const createProductToAPI = async (newProduct: ProductFormData): Promise<void> => {
+  const formData = createFormData(newProduct);
+  
+  const response = await fetch("/api/products", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("상품 등록에 실패했습니다");
+  }
+};
+
+export const createProduct = async (newProduct: ProductFormData): Promise<void> => {
+  if (USE_MOCK) {
+    return createProductToMock(newProduct);
+  } else {
+    return createProductToAPI(newProduct);
+  }
+};
+
+// 상품 수정
+const updateProductToMock = async (productId: number, productData: ProductFormData): Promise<void> => {
+  await mockDelay();
+
+    const index = MOCK_PRODUCTS.findIndex(
+    (product) => product.id === productId
+  );
+
+  if (index === -1) {
+    throw new Error("수정할 상품을 찾을 수 없습니다.");
+  }
+
+  const existingProduct = MOCK_PRODUCTS[index];
+
+  const updatedProduct: Product = {
+    ...existingProduct,
+
+    name: productData.name,
+    description: productData.description,
+    currentPrice: productData.currentPrice,
+    originalPrice: productData.originalPrice,
+    stock: productData.stock,
+    category: productData.category,
+    status: productData.status,
+    discountRate:
+      productData.originalPrice > 0
+        ? Math.round(
+            ((productData.originalPrice - productData.currentPrice) /
+              productData.originalPrice) *
+              100
+          )
+        : 0,
+    imageUrl: productData.imageFile
+      ? URL.createObjectURL(productData.imageFile)
+      : productData.imageUrl ?? existingProduct.imageUrl,
+  };
+  MOCK_PRODUCTS[index] = updatedProduct;
+};
+
+const updateProductToAPI = async (productId: number, productData: ProductFormData): Promise<void> => {
+  const formData = createFormData(productData);
+
+  const response = await fetch(`/api/products/${productId}`, {
+    method: "PUT",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("상품 수정에 실패했습니다");
+  }
+};
+
+export const updateProduct = async (productId: number, productData: ProductFormData): Promise<void> => {
+  if (USE_MOCK) {
+    return updateProductToMock(productId, productData);
+  } else {
+    return updateProductToAPI(productId, productData);
   }
 };
