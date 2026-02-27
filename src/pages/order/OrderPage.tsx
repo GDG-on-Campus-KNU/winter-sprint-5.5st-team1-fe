@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { MOCK_COUPONS } from "@/mocks/data/coupons";
 import { getAvailableCoupons } from "@/utils/coupon";
 import { ShippingInfoCard } from "@/components/cards/order/shippingInfoCard";
@@ -16,7 +17,20 @@ function OrderPage() {
     const items = MOCK_CART_ITEMS;
     const shipping = 3000;
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    useEffect(() => {
+        if (isModalOpen) {
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            document.body.style.overflow = "hidden";
+            document.body.style.paddingRight = `${scrollbarWidth}px`;
+        } else {
+            document.body.style.overflow = "unset";
+            document.body.style.paddingRight = "0px";
+        }
+        return () => {
+            document.body.style.overflow = "unset";
+            document.body.style.paddingRight = "0px";
+        };
+    }, [isModalOpen]);
     const methods = useForm<OrderFormType>({
         resolver: zodResolver(OrderFormSchema),
         mode: "onChange",
@@ -78,7 +92,7 @@ function OrderPage() {
                 </form>
             </FormProvider>
 
-            {isModalOpen && (
+            {isModalOpen && createPortal(
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                     <div
                         className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
@@ -125,7 +139,8 @@ function OrderPage() {
                             )}
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.getElementById("portal-root") as HTMLElement
             )}
         </div>
     );
