@@ -66,7 +66,7 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                 <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-6 h-full lg:col-span-1">
                     <h3 className="text-2xl font-semibold text-gray-500 border-b pb-3">기본 정보</h3>
                     
-                    <div className="space-y-3">
+                    <div className="space-y-4 mb-10">
                         <Label className="text-xl font-medium text-gray-400">상품 이미지 <span className="text-pink-500">*</span></Label>
                         <Controller // 커스텀 컴포넌트
                             control={control} 
@@ -80,7 +80,7 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                         />
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                         <Label htmlFor="name" className="text-xl font-medium text-gray-400">상품명 <span className="text-pink-500">*</span></Label>
                         <Input
                             id="name"
@@ -155,7 +155,7 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                             id="description"
                             {...register("description")}
                             placeholder="상품의 상세 설명을 10자 이상 입력해주세요."
-                            className="min-h-[180px] text-lg resize-none"
+                            className="min-h-[180px] !text-lg resize-none"
                         />
                     </div>
 
