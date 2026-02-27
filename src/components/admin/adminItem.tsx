@@ -24,7 +24,7 @@ export function AdminItem({ item }: AdminItemProps) {
                 <Badge className="bg-red" percentage={item.discountRate} />
             </div>
             <div className="flex min-w-0 overflow-hidden">
-                <div className="flex pl-8 flex-col w-60 pl-8 justify-center">
+                <div className="flex pl-8 flex-col w-60 justify-center">
                     <span className="text-pink-500 font-semibold text-[24px]">
                         ₩{item.currentPrice.toLocaleString()}
                     </span>
