@@ -1,54 +1,60 @@
-import { useState, type FormEvent } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ProductFormData, STATUS_CONFIG, ProductStatus, CATEGORY_CONFIG, ProductCategory } from "@/types/product";
+import { ProductFormData, STATUS_CONFIG, ProductStatus } from "@/types/product";
 import { ImageUploadPreview } from "@/components/admin/imageUploadPreview";
 
+const productSchema = z.object({
+    name: z.string().min(1, { message: "상품명을 입력해주세요." }),
+    currentPrice: z.coerce.number().min(0, { message: "0원 이상이어야 합니다." }),
+    originalPrice: z.coerce.number().min(0, { message: "0원 이상이어야 합니다." }),
+    stock: z.coerce.number().min(0, { message: "재고는 0개 이상이어야 합니다." }),
+    status: z.string(),
+    description: z.string().min(10, { message: "상품 설명은 10자 이상이어야 합니다." }),
+    imageFile: z.any().optional(),
+});
+
+type ProductFormValues = z.infer<typeof productSchema>;
+
 interface ProductFormProps {
-    // initialData가 있으면 수정, 없으면 등록
     initialData?: ProductFormData; 
     onSubmit: (data: ProductFormData) => void;
 }
 
 export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
-    const [name, setName] = useState(initialData?.name || "");
-    const [currentPrice, setCurrentPrice] = useState(initialData?.currentPrice || 0);
-    const [originalPrice, setOriginalPrice] = useState(initialData?.originalPrice || 0);
-    const [stock, setStock] = useState(initialData?.stock || 0);
-    const [category, setCategory] = useState<ProductCategory | "">(initialData?.category || "");
-    const [status, setStatus] = useState<ProductStatus>(initialData?.status || "ACTIVE");
-    const [description, setDescription] = useState(initialData?.description || "");
-    const [imageFile, setImageFile] = useState<File | null>(null);
-    
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
-
-        if (!category) {
-            alert("카테고리를 선택해 주세요.");
-            return;
+    const {
+        register,
+        control,
+        handleSubmit,
+        formState: { errors }
+    } = useForm({
+        resolver: zodResolver(productSchema),
+        defaultValues: {
+            name: initialData?.name || "",
+            currentPrice: initialData?.currentPrice || 0,
+            originalPrice: initialData?.originalPrice || 0,
+            stock: initialData?.stock || 0,
+            status: initialData?.status || "ACTIVE",
+            description: initialData?.description || "",
+            imageFile: null,
         }
+    });
 
+    const onSubmitForm = (data: ProductFormValues) => {
         onSubmit({
-            name,
-            currentPrice,
-            originalPrice,
-            stock,
-            category,
-            description,
-            status,
-            imageFile
-        });
-    };
+            ...data,
+            status: data.status as ProductStatus,
+            imageFile: data.imageFile,
+        })
+    }
 
     return (
-        <form 
-            onSubmit={handleSubmit} 
-            className="w-full max-w-7xl mx-auto text-left"
-        >
-
+        <form onSubmit={handleSubmit(onSubmitForm)} className="w-full max-w-7xl mx-auto text-left">
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-[32px] font-bold text-gray-800">
                     {initialData ? "상품 수정" : "상품 등록"}
@@ -62,39 +68,27 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                     
                     <div className="space-y-3">
                         <Label className="text-xl font-medium text-gray-400">상품 이미지 <span className="text-pink-500">*</span></Label>
-                        <ImageUploadPreview
-                            initialImageUrl={initialData?.imageUrl}
-                            onImageSelect={(file) => setImageFile(file)}
+                        <Controller // 커스텀 컴포넌트
+                            control={control} 
+                            name="imageFile"
+                            render={({ field }) => (
+                                <ImageUploadPreview
+                                    initialImageUrl={initialData?.imageUrl}
+                                    onImageSelect={(file) => field.onChange(file)}
+                                />
+                            )}
                         />
                     </div>
+
                     <div className="space-y-3">
                         <Label htmlFor="name" className="text-xl font-medium text-gray-400">상품명 <span className="text-pink-500">*</span></Label>
                         <Input
                             id="name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            {...register("name")}
                             className="h-12 text-lg lg:text-lg"
                             placeholder="상품명을 입력하세요"
-                            required
                         />
-                    </div>
-                    <div className="space-y-3">
-                        <Label htmlFor="category" className="text-xl font-medium text-gray-400">카테고리 <span className="text-pink-500">*</span></Label>
-                        <Select required value={category} onValueChange={(val) => setCategory(val as ProductCategory)}>
-                            <SelectTrigger className="!h-12 w-full text-lg bg-white border-pink-300 focus-visible:border-pink-400 focus-visible:ring-pink-400/30 focus-visible:ring-[3px]">
-                                <SelectValue placeholder="카테고리 선택" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {(Object.entries(CATEGORY_CONFIG) as [ProductCategory, { label: string }][]).map(([key, config]) => (
-                                    <SelectItem
-                                        key={key}
-                                        value={key}
-                                        className="text-base py-2.5 cursor-pointer">
-                                        {config.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                     </div>
                 </div>
 
@@ -107,53 +101,40 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                             <Input
                                 id="stock"
                                 type="number"
-                                value={stock === 0 ? "" : stock}
-                                onChange={(e) => setStock(Number(e.target.value))}
+                                {...register("stock")}
                                 className="h-12 text-lg lg:text-lg"
-                                min="0"
-                                placeholder="0"
-                                required
                             />
+                            {errors.stock && <p className="text-red-500 text-sm">{errors.stock.message}</p>}
                         </div>
                         <div className="space-y-3">
-                            <Label htmlFor="status" className="text-xl font-medium text-gray-400">상품 상태 <span className="text-pink-500">*</span></Label>
-                            <Select
-                                required
-                                value={status}
-                                onValueChange={(value) => setStatus(value as ProductStatus)}
-                            >
-                                <SelectTrigger className="!h-12 w-full text-lg bg-white border-pink-300 focus-visible:border-pink-400 focus-visible:ring-pink-400/30 focus-visible:ring-[3px]">
-                                    <SelectValue placeholder="상태 선택" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {(Object.keys(STATUS_CONFIG) as ProductStatus[]).map((key) => (
-                                        <SelectItem
-                                            key={key}
-                                            value={key}
-                                            className="text-base py-2.5 cursor-pointer"
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <span className={`w-2.5 h-2.5 rounded-full ${STATUS_CONFIG[key].className}`} />
-                                                {STATUS_CONFIG[key].label}
-                                            </div>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <Label className="text-xl font-medium text-gray-400">상품 상태 <span className="text-pink-500">*</span></Label>
+                            <Controller
+                                control={control}
+                                name="status"
+                                render={({ field }) => (
+                                    <Select value={field.value} onValueChange={field.onChange}>
+                                        <SelectTrigger className="!h-12 w-full text-lg bg-white border-pink-300 focus-visible:border-pink-400 focus-visible:ring-pink-400/30 focus-visible:ring-[3px]">
+                                            <SelectValue placeholder="상태 선택" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {(Object.keys(STATUS_CONFIG) as ProductStatus[]).map((key) => (
+                                                <SelectItem key={key} value={key}>{STATUS_CONFIG[key].label}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
                         </div>
                     </div>
-
+                    
                     <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-3">
                             <Label htmlFor="originalPrice" className="text-xl font-medium text-gray-400">원가 (원)</Label>
                             <Input
                                 id="originalPrice"
                                 type="number"
-                                value={originalPrice === 0 ? "" : originalPrice}
-                                onChange={(e) => setOriginalPrice(Number(e.target.value))}
+                                {...register("originalPrice")}
                                 className="h-12 text-lg lg:text-lg"
-                                min="0"
-                                placeholder="0"
                             />
                         </div>
                         <div className="space-y-3">
@@ -161,13 +142,10 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                             <Input
                                 id="currentPrice"
                                 type="number"
-                                value={currentPrice === 0 ? "" : currentPrice}
-                                onChange={(e) => setCurrentPrice(Number(e.target.value))}
+                                {...register("currentPrice")}
                                 className="h-12 text-lg lg:text-lg"
-                                min="0"
-                                placeholder="0"
-                                required
                             />
+                            {errors.currentPrice && <p className="text-red-500 text-sm">{errors.currentPrice.message}</p>}
                         </div>
                     </div>
 
@@ -175,11 +153,9 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                         <Label htmlFor="description" className="text-xl font-medium text-gray-400">상품 설명 <span className="text-pink-500">*</span></Label>
                         <Textarea
                             id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            placeholder="상품의 상세 설명을 입력해주세요."
-                            className="min-h-[180px] text-lg resize-none lg:text-lg"
-                            required
+                            {...register("description")}
+                            placeholder="상품의 상세 설명을 10자 이상 입력해주세요."
+                            className="min-h-[180px] text-lg resize-none"
                         />
                     </div>
 
