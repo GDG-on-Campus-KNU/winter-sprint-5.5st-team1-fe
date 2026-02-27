@@ -55,7 +55,7 @@ export default function ProductManagePage() {
     }
     
     return (
-        <div className="min-h-screen bg-gray-50 py-10 px-4">
+        <div className="min-h-screen py-10 px-4">
             <ProductForm
                 key={productId}
                 initialData={initialData} 
