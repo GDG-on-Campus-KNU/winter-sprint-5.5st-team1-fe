@@ -1,6 +1,5 @@
 import { Badge } from "@/components/badge"
 import { Button } from "@/components/ui/button"
-import { ProductRating } from "@/components/product/ProductRating"
 import {
     Card,
     CardDescription,
@@ -43,7 +42,6 @@ export function ProductCard({ product }: ProductCardProps) {
                         ₩{product.currentPrice.toLocaleString()}
                     </span>
                 </div>
-                <ProductRating rating={product.rating} />
 
             </CardHeader>
 
