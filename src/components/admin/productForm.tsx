@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ProductFormData, STATUS_CONFIG, ProductStatus } from "@/types/product";
 import { ImageUploadPreview } from "@/components/admin/imageUploadPreview";
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
 const productSchema = z.object({
     name: z.string().min(1, { message: "상품명을 입력해주세요." }),
     currentPrice: z.coerce.number().min(0, { message: "0원 이상이어야 합니다." }),
@@ -16,7 +18,13 @@ const productSchema = z.object({
     stock: z.coerce.number().min(0, { message: "재고는 0개 이상이어야 합니다." }),
     status: z.string(),
     description: z.string().min(10, { message: "상품 설명은 10자 이상이어야 합니다." }),
-    imageFile: z.any().optional(),
+    imageFile: z.any().optional().refine(
+        (file) => {
+            if (!file) return true;
+            return file.size <= MAX_FILE_SIZE;
+        },
+        { message: "이미지 크기는 최대 5MB 이하여야 합니다."}
+    ),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
