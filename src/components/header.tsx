@@ -22,18 +22,18 @@ export default function Header() {
 
   return (
     <header className="flex h-20 w-full items-center justify-between bg-pink-500 px-8 text-white">
-      <div className="flex items-center gap-2 font-semibold text-[28px]">
-        <Store className="w-8 h-8"></Store>
+      <Link to="/" className="flex items-center gap-2 font-semibold text-[28px]">
+        <Store className="w-8 h-8" />
         전자상거래 데모
-      </div>
+      </Link>
       {!user && (
-        <div className="flex items-center gap-8 font-medium text-[24px]">
+        <nav aria-label="비로그인 메뉴" className="flex items-center gap-8 font-medium text-[24px]">
           <button className="flex items-center">로그인</button>
           <button className="flex items-center">회원가입</button>
-        </div>
+        </nav>
       )}
       {user?.role === "user" && (
-        <div className="flex items-center gap-6 font-medium text-[24px]">
+        <nav aria-label="사용자 메뉴" className="flex items-center gap-6 font-medium text-[24px]">
           <Link to="/cart" className="flex items-center gap-2">
             <ShoppingCart className="w-7 h-7" />
             장바구니
@@ -51,10 +51,10 @@ export default function Header() {
             <CircleUserRound className="w-7 h-7"></CircleUserRound>
             마이페이지
           </button>
-        </div>
+        </nav>
       )}
       {user?.role === "admin" && (
-        <div className="flex items-center gap-6 font-medium text-[24px]">
+        <nav aria-label="관리자 메뉴" className="flex items-center gap-6 font-medium text-[24px]">
           <button className="flex items-center gap-2">
             <ScrollText className="w-7 h-7"></ScrollText>
             상품 관리
@@ -67,7 +67,7 @@ export default function Header() {
             <CircleUserRound className="w-7 h-7"></CircleUserRound>
             관리자
           </div>
-        </div>
+        </nav>
       )}
     </header>
   );
