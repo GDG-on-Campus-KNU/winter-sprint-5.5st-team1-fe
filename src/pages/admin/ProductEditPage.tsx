@@ -20,7 +20,6 @@ export default function ProductManagePage() {
             currentPrice: data.currentPrice,
             originalPrice: data.originalPrice,
             stock: data.stock,
-            category: data.category,
             description: data.description,
             status: data.status,
             imageUrl: data.imageUrl,
