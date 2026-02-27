@@ -133,6 +133,7 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                             <Input
                                 id="originalPrice"
                                 type="number"
+                                step="10"
                                 {...register("originalPrice")}
                                 className="h-12 text-lg lg:text-lg"
                             />
@@ -142,6 +143,7 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                             <Input
                                 id="currentPrice"
                                 type="number"
+                                step="10"
                                 {...register("currentPrice")}
                                 className="h-12 text-lg lg:text-lg"
                             />
