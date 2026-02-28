@@ -1,5 +1,4 @@
 import { Badge } from "@/components/badge";
-import { ProductRating } from "@/components/product/ProductRating";
 import { Pencil } from "lucide-react";
 import { Trash } from "lucide-react";
 import { Product } from "@/types/product";
@@ -24,13 +23,8 @@ export function AdminItem({ item }: AdminItemProps) {
                 </h4>
                 <Badge className="bg-red" percentage={item.discountRate} />
             </div>
-            <div className="flex justify-center items-center w-60">
-                <h4 className="text-[24px] font-medium text-gray-500 truncate">
-                    {item.category}
-                </h4>
-            </div>
             <div className="flex min-w-0 overflow-hidden">
-                <div className="flex pl-8 flex-col w-60 pl-8 justify-center">
+                <div className="flex pl-8 flex-col w-60 justify-center">
                     <span className="text-pink-500 font-semibold text-[24px]">
                         ₩{item.currentPrice.toLocaleString()}
                     </span>
@@ -43,9 +37,6 @@ export function AdminItem({ item }: AdminItemProps) {
                 <Badge className="bg-pink-500">
                     {item.stock}
                 </Badge>
-            </div>
-            <div className="flex justify-center w-72">
-                <ProductRating rating={item.rating} />
             </div>
             <div className="flex justify-center items-center w-40">
                 <Badge className={config.className}>{config.label}</Badge>

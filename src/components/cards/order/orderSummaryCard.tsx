@@ -11,34 +11,30 @@ interface OrderSummaryProps {
 export function OrderSummaryCard({ subtotal, discount, shipping, total, isOrderValid }: OrderSummaryProps) {
     return (
         <Card className="w-full pt-8 pb-[38.5px] px-8 border border-gray-100 shadow-sm bg-white rounded-xl text-left">
-            <div className="flex flex-col gap-5">
-                <div className="text-[28px] font-semibold text-gray-500">
+            <section className="flex flex-col gap-5" aria-label="주문 요약">
+                <h2 className="text-[28px] font-semibold text-gray-500">
                     주문 요약
-                </div>
-                <div className="flex flex-col gap-2">
+                </h2>
+                <dl className="flex flex-col gap-2 m-0 p-0">
                     <div className="flex justify-between text-[24px] font-regular text-gray-400">
-                        <span>상품 금액</span>
-                        <span className="text-gray-500 font-medium">₩{subtotal.toLocaleString()}</span>
+                        <dt className="m-0 p-0">상품 금액</dt>
+                        <dd className="text-gray-500 font-medium m-0 p-0">₩{subtotal.toLocaleString()}</dd>
                     </div>
                     <div className="flex justify-between text-[24px] font-regular text-gray-400">
-                        <span>할인 금액</span>
-                        <span className="text-gray-500 font-medium">₩{discount.toLocaleString()}</span>
-                    </div>
+                        <dt className="m-0 p-0">할인 금액</dt>
+                        <dd className="text-gray-500 font-medium m-0 p-0">₩{discount.toLocaleString()}</dd>    </div>
                     <div className="flex justify-between text-[24px] font-regular text-gray-400">
-                        <span>배송비</span>
-                        <span className="text-gray-500 font-medium">₩{shipping.toLocaleString()}</span>
-                    </div>
+                        <dt className="m-0 p-0">배송비</dt>
+                        <dd className="text-gray-500 font-medium m-0 p-0">₩{shipping.toLocaleString()}</dd>   </div>
                     <div className="mt-2 pt-4 border-t border-gray-100 flex justify-between items-baseline font-semibold text-gray-500">
-                        <span className="text-[24px]">최종 금액</span>
-                        <span className="text-[24px]">
-                            ₩{total.toLocaleString()}
-                        </span>
+                        <dt className="text-[24px] m-0 p-0">최종 금액</dt>
+                        <dd className="text-[24px] m-0 p-0">₩{total.toLocaleString()}</dd>
                     </div>
-                </div>
+                </dl>
                 <Button className="w-full h-16 text-[24px] font-bold bg-pink-500 hover:bg-pink-500/80 text-white rounded-lg shadow-sm" disabled={!isOrderValid}>
                     주문하기
                 </Button>
-            </div>
+            </section>
         </Card>
     );
 }
