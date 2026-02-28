@@ -1,6 +1,8 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { useValidator } from "@/hooks/useValidator";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signupSchema, SignupFormInputs } from "@/schemas/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,42 +10,44 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
 export default function RegisterPage() {
-  const [formData, setFormData] = React.useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const navigate = useNavigate();
+  const [isEmailChecked, setIsEmailChecked] = React.useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    trigger,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<SignupFormInputs>({
+    resolver: zodResolver(signupSchema),
+    mode: "onChange",
   });
 
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [isEmailChecked, setIsEmailChecked] = React.useState(false);
-  const { errors, validate, setErrors } = useValidator();
-  const navigate = useNavigate();
+  const emailValue = useWatch({
+    control,
+    name: "email",
+  })
+  const passwordValue = useWatch({
+    control,
+    name: "password",
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-
-    setFormData((prev) => ({ ...prev, [id]: value }));
-
-    if (id === "email") setIsEmailChecked(false);
-
-    validate(id, value, formData.password);
-
-    if (id === "password" && formData.confirmPassword) {
-      validate("confirmPassword", formData.confirmPassword, value);
-    }
-  };
+  React.useEffect(() => {
+    setIsEmailChecked(false);
+  }, [emailValue]);
 
   const handleCheckEmail = async () => {
-    if (errors.email || !formData.email) return;
+    const isEmailValid = await trigger("email");
+    if (!isEmailValid || !emailValue) return;
 
-    setIsLoading(true);
     try {
-      // 테스트용 (중복 O/중복 X)
       await new Promise((resolve, reject) => {
         setTimeout(() => {
           const isDuplicated = false;
-          if (isDuplicated) { // 중복 O
+          if (isDuplicated) {
             reject(new Error("이미 사용 중인 이메일입니다."));
           } else {
             resolve(true);
@@ -51,38 +55,26 @@ export default function RegisterPage() {
         }, 800);
       });
 
-      // 중복 X
       setIsEmailChecked(true);
-      setErrors(prev => ({ ...prev, email: null }));
-
-    } catch (error: unknown) {
+      clearErrors("email");
+    } catch (error) {
       setIsEmailChecked(false);
       const msg = error instanceof Error ? error.message : "중복 확인 오류";
-      setErrors(prev => ({ ...prev, email: msg }));
-    } finally {
-      setIsLoading(false);
+      setError("email", { type: "manual", message: msg });
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (Object.values(errors).some(v => v !== null)) return;
-    if (!isEmailChecked || !formData.name) return;
-
-    setIsLoading(true);
+  const onSubmit = async (data: SignupFormInputs) => {
+    if (!isEmailChecked) return;
 
     try {
-      // 테스트용
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // 가입 성공 가정 -> 메인 페이지 이동
+      
+      console.log("가입 성공 데이터:", data);
       navigate("/home");
 
     } catch (error) {
       console.error("회원가입 실패", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -94,10 +86,17 @@ export default function RegisterPage() {
           <p className="mt-1 text-[20px] font-medium text-muted-foreground">회원 정보를 입력해주세요.</p>
         </div>
 
-        <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-5" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-2">
             <Label htmlFor="name" className="text-[20px] mb-1 font-medium">이름</Label>
-            <Input id="name" placeholder="홍길동" value={formData.name} onChange={handleChange} className={cn("h-11 text-[18px] md:text-[18px]")} />
+            <Input
+              id="name"
+              placeholder="홍길동"
+              className={cn("h-11 text-[18px] md:text-[18px]", errors.name && "border-destructive")}
+              disabled={isSubmitting}
+              {...register("name")}
+            />
+            {errors.name && <p className="text-base text-destructive font-medium">{errors.name.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -108,9 +107,9 @@ export default function RegisterPage() {
                   id="email"
                   type="email"
                   placeholder="example@domain.com"
-                  value={formData.email}
-                  onChange={handleChange}
                   className={cn("h-11 text-[20px] md:text-[20px]", errors.email && "border-destructive")}
+                  disabled={isSubmitting}
+                  {...register("email")}
                 />
               </div>
               <Button
@@ -118,18 +117,13 @@ export default function RegisterPage() {
                 variant="outline"
                 size="default"
                 onClick={handleCheckEmail}
-                disabled={!!errors.email || !formData.email || isEmailChecked}
+                disabled={!!errors.email || !emailValue || isEmailChecked || isSubmitting}
               >
                 {isEmailChecked ? "확인됨" : "중복 확인"}
-
               </Button>
             </div>
-            {errors.email && <p className="text-base text-destructive">
-              {errors.email}
-            </p>}
-            {isEmailChecked && !errors.email && <p className="text-base text-green-600">
-              사용 가능한 이메일입니다.
-            </p>}
+            {errors.email && <p className="text-base text-destructive">{errors.email.message}</p>}
+            {isEmailChecked && !errors.email && <p className="text-base text-green-600">사용 가능한 이메일입니다.</p>}
           </div>
 
           <div className="space-y-2">
@@ -138,14 +132,14 @@ export default function RegisterPage() {
               id="password"
               type="password"
               placeholder="영문+숫자+특수문자 8자 이상"
-              value={formData.password}
-              onChange={handleChange}
               className={cn("h-11 text-[20px] md:text-[20px]", errors.password && "border-destructive")}
+              disabled={isSubmitting}
+              {...register("password")}
             />
             {errors.password ? (
-              <p className="text-base text-destructive">{errors.password}</p>
-            ) : formData.password && (
-              <p className="text-base text-green-600">안전한 비밀번호입니다.</p>
+              <p className="text-base text-destructive">{errors.password.message}</p>
+            ) : (
+              passwordValue && !errors.password && (<p className="text-base text-green-600">안전한 비밀번호입니다.</p>)
             )}
           </div>
 
@@ -155,19 +149,20 @@ export default function RegisterPage() {
               id="confirmPassword"
               type="password"
               placeholder="비밀번호 재입력"
-              value={formData.confirmPassword}
-              onChange={handleChange}
               className={cn("h-11 text-[20px] md:text-[20px]", errors.confirmPassword && "border-destructive")}
+              disabled={isSubmitting}
+              {...register("confirmPassword")}
             />
-            {errors.confirmPassword && <p className="text-base text-destructive">{errors.confirmPassword}</p>}
+            {errors.confirmPassword && <p className="text-base text-destructive">{errors.confirmPassword.message}</p>}
           </div>
 
           <Button
             className="w-full text-xl mt-4"
             size="lg"
-            disabled={isLoading || Object.values(errors).some(v => v !== null) || !isEmailChecked || !formData.name}
+            disabled={isSubmitting || !isValid || !isEmailChecked}
           >
-            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "가입하기"}
+            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            {isSubmitting ? "가입 처리 중..." : "가입하기"}
           </Button>
 
           <div className="flex items-center justify-center mt-6 gap-x-2">
@@ -177,7 +172,7 @@ export default function RegisterPage() {
               variant="link"
               className={cn("h-auto p-0 font-semibold text-base text-pink-500 hover:text-pink-500/80 text-[18px]")}
               onClick={() => {
-                navigate("/login-page");
+                navigate("/login");
               }}
             >
               로그인하기

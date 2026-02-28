@@ -1,5 +1,8 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, LoginFormInputs } from "@/schemas/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,81 +10,34 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [emailError, setEmailError] = React.useState<string | null>(null);
-  const [passwordError, setPasswordError] = React.useState<string | null>(null);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const navigate = useNavigate();
   const [formError, setFormError] = React.useState<string | null>(null);
 
-  const navigate = useNavigate();
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  const handleEmailBlur = () => {
-    if (!email.trim()) {
-      setEmailError("이메일을 입력해주세요.");
-      return;
-    }
-    if (!emailRegex.test(email)) {
-      setEmailError("유효한 이메일 형식이 아닙니다.");
-    } else {
-      setEmailError(null);
-    }
-  };
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    if (emailError) setEmailError(null);
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-    if (passwordError) setPasswordError(null);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm <LoginFormInputs>({
+    resolver: zodResolver(loginSchema),
+    mode: "onBlur", // 포커스를 잃을 때 유효성 검사
+  });
+  
+  const onSubmit = async (data: LoginFormInputs) => {
     setFormError(null);
-
-    if (!email.trim()) {
-      setEmailError("이메일을 입력해주세요.");
-      return;
-    }
-
-    if (!emailRegex.test(email)) {
-      setEmailError("유효한 이메일 형식이 아닙니다.");
-      return;
-    }
-    if (!password) {
-      setPasswordError("비밀번호를 입력해주세요.");
-      return;
-    }
-
-    setIsLoading(true);
-
     try {
       await new Promise((resolve, reject) => {
         setTimeout(() => {
-          if (password === "1234") {
-            resolve({ token: "abc-123-token-sample" });
-          } else {
-            reject(new Error("이메일 또는 비밀번호가 일치하지 않습니다."));
-          }
+          if (data.password === "1234") resolve({ token: "abc-123-token-sample" })
+          else reject(new Error("이메일 또는 비밀번호가 일치하지 않습니다."));
         }, 1500);
       });
 
-      // 실제 로그인 API 연동 전까지 사용하는 임시 토큰
       const fakeToken = "abc-123-token-sample";
       localStorage.setItem("authToken", fakeToken);
-      navigate("/home");
-
-
+      navigate("/");
     } catch (error) {
       const err = error as Error;
       setFormError(err.message || "로그인 실패");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -95,7 +51,7 @@ export default function LoginPage() {
           <p className="mt-1 text-[20px] font-medium text-muted-foreground">이메일과 비밀번호를 입력해주세요.</p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-5">
 
             <div className="relative text-left">
@@ -108,20 +64,18 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   placeholder="example@domain.com"
-                  value={email}
-                  onChange={handleEmailChange}
-                  onBlur={handleEmailBlur}
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                   className={cn(
                     "text-[20px] md:text-[20px] h-11",
-                    emailError ? "border-destructive" : ""
+                    errors.email ? "border-destructive" : ""
                   )}
+                  {...register("email")}
                 />
               </div>
 
-              {emailError && (
+              {errors.email && (
                 <p className="mt-1 block text-base text-destructive font-medium">
-                  {emailError}
+                {errors.email.message}
                 </p>
               )}
             </div>
@@ -136,16 +90,16 @@ export default function LoginPage() {
                   id="password"
                   type="password"
                   placeholder="••••••••"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  disabled={isLoading}
-                  className={cn("text-[20px] md:text-[20px] h-11")}
+                  disabled={isSubmitting}
+                  className={cn("text-[20px] md:text-[20px] h-11",
+                    errors.password ? "border-destructive" : ""
+                  )}
+                  {...register("password")}
                 />
               </div>
-
-              {passwordError && (
+              {errors.password && (
                 <p className="mt-1 block text-base text-destructive font-medium">
-                  {passwordError}
+                {errors.password.message}
                 </p>
               )}
             </div>
@@ -157,9 +111,9 @@ export default function LoginPage() {
             </div>
           )}
 
-          <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            {isLoading ? "로그인 중..." : "로그인"}
+          <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            {isSubmitting ? "로그인 중..." : "로그인"}
           </Button>
 
           <div className="relative mt-2 mb-4">
@@ -179,7 +133,7 @@ export default function LoginPage() {
             size="lg"
             className="w-full"
             onClick={() => {
-              navigate("/signup-page");
+              navigate("/signup");
             }}
           >
             회원가입
