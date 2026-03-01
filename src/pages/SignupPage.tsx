@@ -72,6 +72,32 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="phone" className="text-xl mb-2">연락처</Label>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="010-1234-5678"
+              className={cn("h-11 text-xl lg:text-xl", errors.phone && "border-destructive")}
+              disabled={isSubmitting}
+              {...register("phone")}
+            />
+            {errors.phone && <p className="text-base text-destructive">{errors.phone.message}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="address" className="text-xl mb-2">주소</Label>
+            <Input
+              id="address"
+              type="text"
+              placeholder="서울특별시 강남구 테헤란로 123"
+              className={cn("h-11 text-xl lg:text-xl", errors.address && "border-destructive")}
+              disabled={isSubmitting}
+              {...register("address")}
+            />
+            {errors.address && <p className="text-base text-destructive">{errors.address.message}</p>}
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="password" className="text-xl mb-2">비밀번호</Label>
             <Input
               id="password"
