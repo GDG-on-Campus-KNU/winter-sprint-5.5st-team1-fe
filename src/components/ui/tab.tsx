@@ -1,7 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useQueryState } from "nuqs";
 
-
 interface TabContextValue {
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -9,31 +8,32 @@ interface TabContextValue {
 
 const TabContext = createContext<TabContextValue | null>(null);
 
-function useTabContext() {
+export function useTabContext() {
   const ctx = useContext(TabContext);
-  if (!ctx) throw new Error("Tab 컴포넌트는 Tab.Root 안에서 사용해야 합니다");
+  if (!ctx) throw new Error("Tab 컴포넌트는 TabRoot 안에서 사용해야 합니다");
   return ctx;
 }
 
-
-interface RootProps {
+interface TabRootProps {
   queryKey?: string;
   defaultActiveTab: string;
   children: React.ReactNode;
 }
 
-function Root({ queryKey, defaultActiveTab, children }: RootProps) {
-  const [urlTab, setUrlTab] = queryKey
-    ? // eslint-disable-next-line react-hooks/rules-of-hooks
-      useQueryState(queryKey, { defaultValue: defaultActiveTab })
-    : [null, null];
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+export function TabRoot({
+  queryKey,
+  defaultActiveTab,
+  children,
+}: TabRootProps) {
   const [localTab, setLocalTab] = useState(defaultActiveTab);
 
-  const activeTab = urlTab ?? localTab;
+  const urlState = queryKey
+    ? useQueryState(queryKey, { defaultValue: defaultActiveTab })
+    : null;
+
+  const activeTab = urlState ? (urlState[0] ?? defaultActiveTab) : localTab;
   const setActiveTab = (tab: string) => {
-    if (setUrlTab) setUrlTab(tab);
+    if (urlState) urlState[1](tab);
     else setLocalTab(tab);
   };
 
@@ -44,29 +44,34 @@ function Root({ queryKey, defaultActiveTab, children }: RootProps) {
   );
 }
 
-
-interface NavBarProps {
+interface TabNavBarProps {
   children: React.ReactNode;
   className?: string;
 }
 
-function NavBar({ children, className }: NavBarProps) {
+export function TabNavBar({ children, className }: TabNavBarProps) {
   return (
-    <nav className={`rounded-2xl bg-white shadow-sm overflow-hidden ${className ?? ""}`}>
+    <nav
+      className={`rounded-2xl bg-white shadow-sm overflow-hidden ${className ?? ""}`}
+    >
       {children}
     </nav>
   );
 }
 
-
-interface NavItemProps {
+interface TabNavItemProps {
   menu: string;
   children: React.ReactNode;
   icon?: React.ReactNode;
   className?: string;
 }
 
-function NavItem({ menu, children, icon, className }: NavItemProps) {
+export function TabNavItem({
+  menu,
+  children,
+  icon,
+  className,
+}: TabNavItemProps) {
   const { activeTab, setActiveTab } = useTabContext();
   const isActive = activeTab === menu;
 
@@ -85,22 +90,13 @@ function NavItem({ menu, children, icon, className }: NavItemProps) {
   );
 }
 
-
-interface PanelProps {
+interface TabPanelProps {
   menu: string;
   children: React.ReactNode;
 }
 
-function Panel({ menu, children }: PanelProps) {
+export function TabPanel({ menu, children }: TabPanelProps) {
   const { activeTab } = useTabContext();
   if (activeTab !== menu) return null;
   return <>{children}</>;
 }
-
-
-export const Tab = {
-  Root,
-  NavBar,
-  NavItem,
-  Panel,
-};

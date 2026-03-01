@@ -7,12 +7,12 @@ const PERIOD_OPTIONS = [
   { label: "1개월", value: "1" },
   { label: "3개월", value: "3" },
   { label: "6개월", value: "6" },
-  { label: "12개월", value: "12" },
 ] as const;
 
 const ORDER_STATUS_MAP: Record<string, string> = {
   PENDING: "주문 대기",
   CONFIRMED: "주문 확정",
+  SHIPPING: "배송 중",
   DELIVERED: "배송 완료",
   CANCELLED: "취소됨",
 };
@@ -20,6 +20,7 @@ const ORDER_STATUS_MAP: Record<string, string> = {
 const ORDER_STATUS_COLOR: Record<string, string> = {
   PENDING: "text-yellow",
   CONFIRMED: "text-blue",
+  SHIPPING: "text-purple-500",
   DELIVERED: "text-pink-500",
   CANCELLED: "text-red",
 };
@@ -27,7 +28,7 @@ const ORDER_STATUS_COLOR: Record<string, string> = {
 export default function MyOrders() {
   const [period, setPeriod] = useQueryState("period", { defaultValue: "1" });
   const { data, isLoading } = useMyOrders({
-    period: period as "1" | "3" | "6" | "12",
+    months: period as "1" | "3" | "6",
   });
 
   return (

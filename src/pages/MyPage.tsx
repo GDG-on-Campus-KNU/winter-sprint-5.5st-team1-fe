@@ -1,7 +1,7 @@
 import { User, Ticket, Package } from "lucide-react";
 import { useMyInfo } from "@/hooks/useMyPage";
 import { Loading } from "@/components/loading";
-import { Tab } from "@/components/ui/tab";
+import { TabRoot, TabNavBar, TabNavItem, TabPanel } from "@/components/ui/tab";
 import MyInfo from "@/components/user/myInfo";
 import MyCoupons from "@/components/user/myCounpons";
 import MyOrders from "@/components/user/myOrders";
@@ -10,7 +10,7 @@ export default function MyPage() {
   const { data: myInfo, isLoading } = useMyInfo();
 
   return (
-    <Tab.Root queryKey="tab" defaultActiveTab="orders">
+    <TabRoot queryKey="tab" defaultActiveTab="orders">
       <div className="mx-auto max-w-5xl px-4 py-8 flex gap-6">
         <aside className="w-64 flex-shrink-0">
           <div className="rounded-2xl bg-white shadow-sm p-6 flex flex-col items-center gap-3 mb-4">
@@ -23,17 +23,17 @@ export default function MyPage() {
             <p className="text-[13px] text-gray-300">{myInfo?.email ?? ""}</p>
           </div>
 
-          <Tab.NavBar>
-            <Tab.NavItem menu="orders" icon={<Package className="h-5 w-5" />}>
+          <TabNavBar>
+            <TabNavItem menu="orders" icon={<Package className="h-5 w-5" />}>
               주문 내역
-            </Tab.NavItem>
-            <Tab.NavItem menu="coupons" icon={<Ticket className="h-5 w-5" />}>
+            </TabNavItem>
+            <TabNavItem menu="coupons" icon={<Ticket className="h-5 w-5" />}>
               내 쿠폰함
-            </Tab.NavItem>
-            <Tab.NavItem menu="info" icon={<User className="h-5 w-5" />}>
+            </TabNavItem>
+            <TabNavItem menu="info" icon={<User className="h-5 w-5" />}>
               내 정보
-            </Tab.NavItem>
-          </Tab.NavBar>
+            </TabNavItem>
+          </TabNavBar>
         </aside>
 
         <main className="flex-1 min-w-0">
@@ -41,19 +41,19 @@ export default function MyPage() {
             <Loading />
           ) : (
             <>
-              <Tab.Panel menu="orders">
+              <TabPanel menu="orders">
                 <MyOrders />
-              </Tab.Panel>
-              <Tab.Panel menu="coupons">
+              </TabPanel>
+              <TabPanel menu="coupons">
                 <MyCoupons />
-              </Tab.Panel>
-              <Tab.Panel menu="info">
+              </TabPanel>
+              <TabPanel menu="info">
                 <MyInfo />
-              </Tab.Panel>
+              </TabPanel>
             </>
           )}
         </main>
       </div>
-    </Tab.Root>
+    </TabRoot>
   );
 }
