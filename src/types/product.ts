@@ -35,3 +35,14 @@ export interface ProductFormData {
   imageUrl?: string; // 기존 이미지 URL (수정 시에만 사용)
   status: ProductStatus;
 }
+export interface BackendProductResponse {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  product_status: ProductStatus;
+  image_url: string;
+  created_at: string;
+  updated_at: string;
+}

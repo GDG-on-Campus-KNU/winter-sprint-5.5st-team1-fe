@@ -1,7 +1,8 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useQueryState, parseAsString, parseAsInteger } from "nuqs";
+import { getProducts } from "@/api/product.api";
+import { Product } from "@/types/product";
 import { ProductCard } from "@/components/cards/productCard";
-import { MOCK_PRODUCTS } from "@/mocks/data/products";
 import { SortFilter } from "@/components/sortFilter";
 import { Pagination } from "@/components/pagination";
 import { Loading } from "@/components/loading";
@@ -13,34 +14,34 @@ const SORT_OPTIONS = [
 
 function ProductPage() {
     const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState<Product[]>([]);
     const [sortBy, setSortBy] = useQueryState("sort", parseAsString.withDefault("price-desc"));
     const [currentPage, setCurrentPage] = useQueryState("page", parseAsInteger.withDefault(1));
-    const itemsPerPage = 15;
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 3000);
-        return () => clearTimeout(timer);
-    }, []);
+        const fetchProductData = async () => {
+            setLoading(true);
+            try {
+                const response = await getProducts(currentPage, sortBy);
 
-    const sortedProducts = useMemo(() => {
-        const result = [...MOCK_PRODUCTS];
-        if (sortBy === "price-desc") return result.sort((a, b) => b.currentPrice - a.currentPrice);
-        if (sortBy === "price-asc") return result.sort((a, b) => a.currentPrice - b.currentPrice);
-        return result;
-    }, [sortBy]);
+                setProducts(response.products);
+                setTotalPages(response.totalPages);
+            } catch (error) {
+                console.error("상품 데이터를 불러오는 중 오류 발생:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const totalPages = Math.max(1, Math.ceil(sortedProducts.length / itemsPerPage));
+        fetchProductData();
+    }, [currentPage, sortBy]);
+
     useEffect(() => {
-        if (currentPage > totalPages) {
+        if (!loading && totalPages > 0 && currentPage > totalPages) {
             setCurrentPage(1);
         }
-    }, [totalPages, currentPage, setCurrentPage]);
-    const currentDisplayItems = useMemo(() => {
-        const start = (currentPage - 1) * itemsPerPage;
-        return sortedProducts.slice(start, start + itemsPerPage);
-    }, [sortedProducts, currentPage]);
+    }, [totalPages, currentPage, setCurrentPage, loading]);
 
     if (loading) {
         return (
@@ -68,7 +69,7 @@ function ProductPage() {
                 </div>
                 <div className="w-full overflow-x-auto pb-6">
                     <ul className="grid grid-cols-5 gap-x-5 gap-y-10 justify-items-center list-none min-w-max px-2">
-                        {currentDisplayItems.map((product) => (
+                        {products.map((product) => (
                             <li key={product.id}>
                                 <ProductCard product={product} />
                             </li>

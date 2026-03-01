@@ -28,13 +28,13 @@ export function ProductCard({ product }: ProductCardProps) {
                     />
                 </div>
                 <CardHeader>
-                    <CardTitle className="font-semibold text-[24px] text-gray-500">
+                    <CardTitle className="pt-6 font-semibold text-[24px] text-gray-500">
                         {product.name}
                     </CardTitle>
                     <CardDescription className="font-regular text-[20px] text-gray-300">
                         {product.description}
                     </CardDescription>
-                    <div className="mt-2 flex items-baseline gap-2">
+                    <div className="mt-2 pb-4 flex items-baseline gap-2">
                         <span className="text-gray-300 line-through font-regular text-[20px]">
                             ₩{product.originalPrice.toLocaleString()}
                         </span>
