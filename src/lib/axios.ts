@@ -19,11 +19,41 @@ instance.interceptors.request.use(
 // 응답 - 401 처리
 instance.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("authToken");
-      window.location.href = "/login";
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const refreshToken = localStorage.getItem("refreshToken");
+
+        if (!refreshToken) throw new Error("No refresh token");
+
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh`,
+          { refresh_token: refreshToken }
+        );
+
+        if (data.success && data.data) {
+          const newAccessToken = data.data.access_token;
+          const newRefreshToken = data.data.refresh_token;
+
+          localStorage.setItem("authToken", newAccessToken);
+          localStorage.setItem("refreshToken", newRefreshToken);
+
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+          return instance(originalRequest);
+        }
+      } catch (refreshError) {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("refreshToken");
+        window.location.href = "/login"
+        return Promise.reject(refreshError);
+      }
     }
+
     return Promise.reject(error);
   },
 );

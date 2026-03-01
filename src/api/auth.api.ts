@@ -21,8 +21,3 @@ export const loginApi = async (data: LoginFormInputs): Promise<LoginResponse> =>
     const response = await instance.post<LoginResponse>("/api/v1/auth/login", data);
     return response.data;
 };
-
-export const refreshTokenApi = async (refreshToken: string): Promise<LoginResponse> => {
-    const response = await instance.post<LoginResponse>("/api/v1/auth/refresh", { refresh_token: refreshToken, });
-return response.data;
-}
