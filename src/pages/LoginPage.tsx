@@ -2,12 +2,14 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { isAxiosError } from "axios";
 import { loginSchema, LoginFormInputs } from "@/schemas/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { loginApi, LoginResponse } from "@/api/auth.api";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -25,18 +27,25 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormInputs) => {
     setFormError(null);
     try {
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          if (data.password === "1234") resolve({ token: "abc-123-token-sample" })
-          else reject(new Error("이메일 또는 비밀번호가 일치하지 않습니다."));
-        }, 1500);
-      });
-      const fakeToken = "abc-123-token-sample";
-      localStorage.setItem("authToken", fakeToken);
-      navigate("/");
+      const response = await loginApi(data);
+
+      if (response.success && response.data) {
+        localStorage.setItem("authToken", response.data.access_token);
+        localStorage.setItem("refreshToken", response.data.refresh_token);
+        navigate("/");
+      } else {
+        setFormError(response.message || "로그인에 실패했습니다.");
+      }
     } catch (error) {
-      const err = error as Error;
-      setFormError(err.message || "로그인 실패");
+      if (isAxiosError(error)) {
+        const errorData = error.response?.data as LoginResponse;
+        const errorMessage = errorData?.error?.message || errorData?.message || "아이디나 비밀번호를 다시 확인해주세요.";
+
+        setFormError(errorMessage);
+      } else {
+        console.error("Login Error:", error);
+        setFormError("서버와의 통신 중 문제가 발생했습니다.");
+      }
     }
   };
 
