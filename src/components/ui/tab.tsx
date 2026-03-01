@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
 import { useQueryState } from "nuqs";
+
 
 interface TabContextValue {
   activeTab: string;
@@ -8,41 +9,31 @@ interface TabContextValue {
 
 const TabContext = createContext<TabContextValue | null>(null);
 
-export function useTabContext() {
+const useTabContext = () => {
   const ctx = useContext(TabContext);
   if (!ctx) throw new Error("Tab 컴포넌트는 TabRoot 안에서 사용해야 합니다");
   return ctx;
-}
+};
+
 
 interface TabRootProps {
-  queryKey?: string;
+  queryKey: string;
   defaultActiveTab: string;
   children: React.ReactNode;
 }
 
-export function TabRoot({
-  queryKey,
-  defaultActiveTab,
-  children,
-}: TabRootProps) {
-  const [localTab, setLocalTab] = useState(defaultActiveTab);
-
-  const urlState = queryKey
-    ? useQueryState(queryKey, { defaultValue: defaultActiveTab })
-    : null;
-
-  const activeTab = urlState ? (urlState[0] ?? defaultActiveTab) : localTab;
-  const setActiveTab = (tab: string) => {
-    if (urlState) urlState[1](tab);
-    else setLocalTab(tab);
-  };
+export function TabRoot({ queryKey, defaultActiveTab, children }: TabRootProps) {
+  const [urlTab, setUrlTab] = useQueryState(queryKey, {
+    defaultValue: defaultActiveTab,
+  });
 
   return (
-    <TabContext.Provider value={{ activeTab, setActiveTab }}>
+    <TabContext.Provider value={{ activeTab: urlTab ?? defaultActiveTab, setActiveTab: setUrlTab }}>
       {children}
     </TabContext.Provider>
   );
 }
+
 
 interface TabNavBarProps {
   children: React.ReactNode;
@@ -51,13 +42,12 @@ interface TabNavBarProps {
 
 export function TabNavBar({ children, className }: TabNavBarProps) {
   return (
-    <nav
-      className={`rounded-2xl bg-white shadow-sm overflow-hidden ${className ?? ""}`}
-    >
+    <nav className={`rounded-2xl bg-white shadow-sm overflow-hidden ${className ?? ""}`}>
       {children}
     </nav>
   );
 }
+
 
 interface TabNavItemProps {
   menu: string;
@@ -66,12 +56,7 @@ interface TabNavItemProps {
   className?: string;
 }
 
-export function TabNavItem({
-  menu,
-  children,
-  icon,
-  className,
-}: TabNavItemProps) {
+export function TabNavItem({ menu, children, icon, className }: TabNavItemProps) {
   const { activeTab, setActiveTab } = useTabContext();
   const isActive = activeTab === menu;
 
@@ -89,6 +74,7 @@ export function TabNavItem({
     </button>
   );
 }
+
 
 interface TabPanelProps {
   menu: string;

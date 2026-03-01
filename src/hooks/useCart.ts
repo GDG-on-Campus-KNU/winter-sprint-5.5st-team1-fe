@@ -11,7 +11,7 @@ import {
 export const useCart = () => {
   const {
     items,
-    addItem,
+    addManyItems,
     removeItem,
     updateQuantity,
     clearCart: clearStore,
@@ -22,14 +22,14 @@ export const useCart = () => {
       try {
         const data = await getCart();
         clearStore();
-        data.items.forEach((item) => {
-          addItem({
-            productId: item.productId,
-            name: item.productName, 
-            price: item.productPrice, 
+        addManyItems(
+          data.items.map((item) => ({
+            productId: item.product_id,
+            name: item.product_name,
+            price: item.product_price,
             quantity: item.quantity,
-          });
-        });
+          })),
+        );
       } catch (error) {
         console.error("장바구니 로드 실패:", error);
       }
@@ -39,7 +39,6 @@ export const useCart = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 낙관적 업데이트
   const handleUpdateQuantity = async (productId: number, quantity: number) => {
     const prevQuantity =
       items.find((i) => i.productId === productId)?.quantity ?? 0;
@@ -54,7 +53,6 @@ export const useCart = () => {
     }
   };
 
-  // 개별 삭제
   const handleRemoveItem = async (productId: number) => {
     const prevItems = [...items];
     removeItem(productId);
@@ -63,45 +61,47 @@ export const useCart = () => {
       await removeCartItem(productId);
     } catch (error) {
       console.error("삭제 실패, 롤백합니다:", error);
-      clearStore();
-      prevItems.forEach((item) => addItem(item));
+      useCartStore.setState({
+        items: prevItems,
+        itemCount: prevItems.reduce((sum, i) => sum + i.quantity, 0),
+      });
     }
   };
 
-  // 선택 삭제
   const handleRemoveSelected = async (productIds: number[]) => {
     const prevItems = [...items];
-
     productIds.forEach((id) => removeItem(id));
 
     try {
       await removeSelectedCartItems(productIds);
     } catch (error) {
       console.error("선택 삭제 실패, 롤백합니다:", error);
-      clearStore();
-      prevItems.forEach((item) => addItem(item));
+      useCartStore.setState({
+        items: prevItems,
+        itemCount: prevItems.reduce((sum, i) => sum + i.quantity, 0),
+      });
     }
   };
 
-  // 전체 비우기
   const handleClearCart = async () => {
     const prevItems = [...items];
-
     clearStore();
 
     try {
       await clearCart();
     } catch (error) {
       console.error("전체 비우기 실패, 롤백합니다:", error);
-      prevItems.forEach((item) => addItem(item));
+      useCartStore.setState({
+        items: prevItems,
+        itemCount: prevItems.reduce((sum, i) => sum + i.quantity, 0),
+      });
     }
   };
 
-  // 총 금액
   const calcTotal = (selectedIds: number[]) => {
     return items
       .filter((item) => selectedIds.includes(item.productId))
-      .reduce((sum, item) => sum + item.price * item.quantity, 0); 
+      .reduce((sum, item) => sum + item.price * item.quantity, 0);
   };
 
   return {

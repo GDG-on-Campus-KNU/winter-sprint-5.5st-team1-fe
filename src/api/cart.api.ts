@@ -1,71 +1,37 @@
-import axios from "axios";
-import { MOCK_CART_ITEMS } from "@/mocks/data/cart";
+import axios from "@/lib/axios";
 import { CartResponse } from "@/types/cart";
 
-const USE_MOCK = true;
-
-const mockDelay = (ms = 500): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
-// 조회
-const getCartMock = async (): Promise<CartResponse> => {
-  await mockDelay();
-  return MOCK_CART_ITEMS;
-};
-
-const getCartAPI = async (): Promise<CartResponse> => {
-  const { data } = await axios.get("/cart");
+export const getCart = async (): Promise<CartResponse> => {
+  const { data } = await axios.get("/api/v1/cart");
   return data.data;
 };
 
-export const getCart = () => (USE_MOCK ? getCartMock() : getCartAPI());
-
-// 수량 변경
-const updateQuantityMock = async (): Promise<void> => {
-  await mockDelay(300);
-};
-
-const updateQuantityAPI = async (
+export const updateCartItemQuantity = async (
   productId: number,
   quantity: number,
 ): Promise<void> => {
-  await axios.patch(`/cart/items/${productId}`, { quantity });
+  await axios.patch(`/api/v1/cart/items/${productId}`, { quantity });
 };
 
-export const updateCartItemQuantity = (productId: number, quantity: number) =>
-  USE_MOCK ? updateQuantityMock() : updateQuantityAPI(productId, quantity);
-
-// 개별 삭제
-const removeItemMock = async (): Promise<void> => {
-  await mockDelay(300);
+export const removeCartItem = async (productId: number): Promise<void> => {
+  await axios.delete(`/api/v1/cart/items/${productId}`);
 };
 
-const removeItemAPI = async (productId: number): Promise<void> => {
-  await axios.delete(`/cart/items/${productId}`);
+export const removeSelectedCartItems = async (
+  productIds: number[],
+): Promise<void> => {
+  await axios.delete("/api/v1/cart/items", {
+    data: { item_ids: productIds },
+  });
 };
 
-export const removeCartItem = (productId: number) =>
-  USE_MOCK ? removeItemMock() : removeItemAPI(productId);
-
-// 선택 삭제
-const removeSelectedMock = async (): Promise<void> => {
-  await mockDelay(300);
+export const clearCart = async (): Promise<void> => {
+  await axios.delete("/api/v1/cart");
 };
 
-const removeSelectedAPI = async (productIds: number[]): Promise<void> => {
-  await axios.delete("/cart/items", { data: { itemIds: productIds } });
+export const addCartItem = async (
+  productId: number,
+  quantity: number,
+): Promise<void> => {
+  await axios.post("/api/v1/cart", { product_id: productId, quantity });
 };
-
-export const removeSelectedCartItems = (productIds: number[]) =>
-  USE_MOCK ? removeSelectedMock() : removeSelectedAPI(productIds);
-
-// 전체 삭제
-const clearCartMock = async (): Promise<void> => {
-  await mockDelay(300);
-};
-
-const clearCartAPI = async (): Promise<void> => {
-  await axios.delete("/cart");
-};
-
-export const clearCart = () => (USE_MOCK ? clearCartMock() : clearCartAPI());
