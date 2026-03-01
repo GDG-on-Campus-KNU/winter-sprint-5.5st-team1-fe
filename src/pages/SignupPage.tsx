@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,62 +10,20 @@ import { Loader2 } from "lucide-react";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  const [isEmailChecked, setIsEmailChecked] = React.useState(false);
 
   const {
     register,
     handleSubmit,
     control,
-    trigger,
-    setError,
-    clearErrors,
     formState: { errors, isSubmitting, isValid },
   } = useForm<SignupFormInputs>({
     resolver: zodResolver(signupSchema),
     mode: "onChange",
   });
 
-  const emailValue = useWatch({
-    control,
-    name: "email",
-  })
-  const passwordValue = useWatch({
-    control,
-    name: "password",
-  });
-
-  React.useEffect(() => {
-    setIsEmailChecked(false);
-  }, [emailValue]);
-
-  const handleCheckEmail = async () => {
-    const isEmailValid = await trigger("email");
-    if (!isEmailValid || !emailValue) return;
-
-    try {
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          const isDuplicated = false;
-          if (isDuplicated) {
-            reject(new Error("이미 사용 중인 이메일입니다."));
-          } else {
-            resolve(true);
-          }
-        }, 800);
-      });
-
-      setIsEmailChecked(true);
-      clearErrors("email");
-    } catch (error) {
-      setIsEmailChecked(false);
-      const msg = error instanceof Error ? error.message : "중복 확인 오류";
-      setError("email", { type: "manual", message: msg });
-    }
-  };
+  const passwordValue = useWatch({ control, name: "password" });
 
   const onSubmit = async (data: SignupFormInputs) => {
-    if (!isEmailChecked) return;
-
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
@@ -101,7 +58,6 @@ export default function RegisterPage() {
 
           <div className="space-y-2">
             <Label htmlFor="email" className="text-xl mb-2">이메일</Label>
-            <div className="flex gap-2">
               <div className="relative flex-1">
                 <Input
                   id="email"
@@ -112,18 +68,7 @@ export default function RegisterPage() {
                   {...register("email")}
                 />
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="default"
-                onClick={handleCheckEmail}
-                disabled={!!errors.email || !emailValue || isEmailChecked || isSubmitting}
-              >
-                {isEmailChecked ? "확인됨" : "중복 확인"}
-              </Button>
-            </div>
             {errors.email && <p className="text-base text-destructive">{errors.email.message}</p>}
-            {isEmailChecked && !errors.email && <p className="text-base text-green-600">사용 가능한 이메일입니다.</p>}
           </div>
 
           <div className="space-y-2">
@@ -159,7 +104,7 @@ export default function RegisterPage() {
           <Button
             className="w-full text-xl mt-4"
             size="lg"
-            disabled={isSubmitting || !isValid || !isEmailChecked}
+            disabled={isSubmitting || !isValid}
           >
             {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             {isSubmitting ? "가입 처리 중..." : "가입하기"}
