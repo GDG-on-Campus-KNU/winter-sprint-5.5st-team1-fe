@@ -35,8 +35,6 @@ const ProductDetailPage = () => {
       </div>
       <div className="w-full">
         <ProductDetailInfo
-          category={product.category}
-          rating={product.rating}
           stock={product.stock}
         />
       </div>
