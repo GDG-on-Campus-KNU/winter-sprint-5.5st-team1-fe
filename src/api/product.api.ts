@@ -116,8 +116,7 @@ export const getProducts = async (
   sortBy: string = "price-desc",
 ): Promise<GetProductsResponse> => {
   if (USE_MOCK) {
-    // Mock 모드일 때도 동일한 형태를 반환하도록 껍데기를 맞춰줍니다.
-    const mockData = await fetchProductsFromMock(); // 기존 팀원이 만든 함수
+    const mockData = await fetchProductsFromMock();
     return {
       products: mockData,
       totalPages: 1, // Mock일 때는 임시로 1페이지로 고정
