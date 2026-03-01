@@ -16,7 +16,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 50000,
     imageUrl:
       "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500",
-    category: "accessories",
     status: "ACTIVE",
   },
   {
@@ -33,7 +32,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 50000,
     imageUrl:
       "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500",
-    category: "accessories",
     status: "ACTIVE",
   },
   {
@@ -50,7 +48,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 50000,
     imageUrl:
       "https://images.unsplash.com/photo-1599669454699-248893623440?w=500",
-    category: "accessories",
     status: "ACTIVE",
   },
   {
@@ -67,7 +64,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 50000,
     imageUrl:
       "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500",
-    category: "accessories",
     status: "ACTIVE",
   },
   {
@@ -84,7 +80,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 50000,
     imageUrl:
       "https://images.unsplash.com/photo-1595225476474-87563907a212?w=500",
-    category: "accessories",
     status: "ACTIVE",
   },
   {
@@ -101,7 +96,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 50000,
     imageUrl:
       "https://images.unsplash.com/photo-1618384881928-34bc8b832b3b?w=500",
-    category: "accessories",
     status: "ACTIVE",
   },
   {
@@ -118,7 +112,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 30000,
     imageUrl:
       "https://images.unsplash.com/photo-1611078489935-0cb964de46d6?w=500",
-    category: "accessories",
     status: "ACTIVE",
   },
   {
@@ -135,7 +128,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 50000,
     imageUrl:
       "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500",
-    category: "accessories",
     status: "INACTIVE",
   },
   {
@@ -152,7 +144,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 0,
     imageUrl:
       "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500",
-    category: "accessories",
     status: "ACTIVE",
   },
   {
@@ -168,7 +159,6 @@ export const MOCK_PRODUCTS: Product[] = [
     shippingFee: 3000,
     freeShippingThreshold: 50000,
     imageUrl: "https://images.unsplash.com/photo-1545048702-79362596cdc9?w=500",
-    category: "accessories",
     status: "SOLD_OUT",
   },
   {
@@ -185,7 +175,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 50000,
     imageUrl:
       "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=500",
-    category: "camera",
     status: "ACTIVE",
   },
   {
@@ -202,7 +191,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 50000,
     imageUrl:
       "https://images.unsplash.com/photo-1595225476474-87563907a212?w=500",
-    category: "accessories",
     status: "ACTIVE",
   },
   {
@@ -219,7 +207,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 50000,
     imageUrl:
       "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500",
-    category: "accessories",
     status: "ACTIVE",
   },
   {
@@ -236,7 +223,6 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 100000,
     imageUrl:
       "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500",
-    category: "accessories",
     status: "DELETED",
   },
   {
@@ -253,15 +239,10 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 50000,
     imageUrl:
       "https://images.unsplash.com/photo-1599669454699-248893623440?w=500",
-    category: "accessories",
     status: "ACTIVE",
   },
 ];
 
 export const getProductById = (id: number): Product | undefined => {
   return MOCK_PRODUCTS.find((product) => product.id === id);
-};
-
-export const getProductsByCategory = (category: string): Product[] => {
-  return MOCK_PRODUCTS.filter((product) => product.category === category);
 };

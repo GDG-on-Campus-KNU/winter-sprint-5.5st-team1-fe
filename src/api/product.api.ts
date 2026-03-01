@@ -15,7 +15,6 @@ const createFormData = (data: ProductFormData): FormData => {
   formData.append("currentPrice", data.currentPrice.toString());
   formData.append("originalPrice", data.originalPrice.toString());
   formData.append("stock", data.stock.toString());
-  formData.append("category", data.category);
   formData.append("description", data.description);
 
   // 이미지가 있을 때만 추가
@@ -102,7 +101,6 @@ const createProductToMock = async (newProduct: ProductFormData): Promise<void> =
     stock: newProduct.stock,
     shippingFee: 3000,
     freeShippingThreshold: 50000,
-    category: newProduct.category,
     status: newProduct.status,
     imageUrl: newProduct.imageFile
       ? URL.createObjectURL(newProduct.imageFile)
@@ -155,7 +153,6 @@ const updateProductToMock = async (productId: number, productData: ProductFormDa
     currentPrice: productData.currentPrice,
     originalPrice: productData.originalPrice,
     stock: productData.stock,
-    category: productData.category,
     status: productData.status,
     discountRate:
       productData.originalPrice > 0

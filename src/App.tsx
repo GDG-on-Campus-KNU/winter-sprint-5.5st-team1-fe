@@ -5,11 +5,14 @@ import ProductPage from "./pages/product/ProductPage";
 import ProductDetailPage from "./pages/product/ProductDetailPage";
 import OrderPage from "./pages/order/OrderPage";
 import OrderCompletePage from "./pages/order/OrderCompletePage";
-import ProductManagePage from "./pages/admin/ProductManagePage";
 import CartPage from "./pages/CartPage";
 import ManagePage from "./pages/AdminProductPage";
 import MyPage from "./pages/MyPage";
 import Private from "./components/private";
+import ProductCreatePage from "./pages/admin/ProductCreatePage";
+import ProductEditPage from "./pages/admin/ProductEditPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 
 function App() {
   return (
@@ -23,8 +26,6 @@ function App() {
           path="/order/complete/:orderId"
           element={<OrderCompletePage />}
         />
-        <Route path="/admin/product" element={<ManagePage />} />
-        <Route path="/mypage" element={<MyPage />} />
         <Route
           path="/cart"
           element={
@@ -33,8 +34,12 @@ function App() {
             </Private>
           }
         />
-        <Route path="/admin/products/:id" element={<ProductManagePage />} />
+        <Route path="/mypage" element={<MyPage />} />
         <Route path="/admin/product" element={<ManagePage />} />
+        <Route path="/admin/product/new" element={<ProductCreatePage />} />
+        <Route path="/admin/product/:id" element={<ProductEditPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
       </Route>
     </Routes>
   );

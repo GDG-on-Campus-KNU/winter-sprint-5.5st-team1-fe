@@ -1,25 +1,14 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { OrderData } from "@/types/order";
-
-export function OrderInfoCard() {
-    const order: OrderData = {
-        orderNumber: "202602121222",
-        status: "배송중",
-        orderDate: "2026년 2월 12일",
-        address: "대구광역시 북구 대학로 80 (IT대학5호관)",
-        items: [
-            { name: "게이밍 키보드", quantity: 1 },
-            { name: "무선 게이밍 마우스", quantity: 2 },
-            { name: "장패드", quantity: 5 }
-        ],
-        totalPrice: 245000
-    };
-
+interface OrderInfoCardProps {
+    order: OrderData;
+}
+export function OrderInfoCard({ order }: OrderInfoCardProps) {
     return (
         <Card className="w-full max-w-6xl p-6 border border-gray-100 shadow-sm bg-white rounded-xl text-left">
-            <div className="flex flex-col gap-5">
-                <div className="flex justify-between items-center">
+            <article className="flex flex-col gap-5">
+                <header className="flex justify-between items-center">
                     <div className="text-[24px] font-medium">
                         <span className="text-black">주문번호 </span>
                         <span className="text-pink-500">
@@ -29,7 +18,7 @@ export function OrderInfoCard() {
                     <span className="text-pink-500 text-[24px] font-medium">
                         {order.status}
                     </span>
-                </div>
+                </header>
                 <div className="text-[20px] font-normal text-gray-500 leading-tight">
                     {order.items.map((item, idx) => (
                         <span key={idx}>
@@ -63,7 +52,7 @@ export function OrderInfoCard() {
                         </Button>
                     </div>
                 </div>
-            </div>
+            </article>
         </Card>
     );
 }
