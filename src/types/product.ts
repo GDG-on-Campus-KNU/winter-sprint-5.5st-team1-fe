@@ -5,7 +5,7 @@ export const STATUS_CONFIG: Record<
   { label: string; className: string }
 > = {
   ACTIVE: { label: "판매 중", className: "bg-pink-500" },
-  INACTIVE: { label: "판매 중지", className: "bg-gray-300" },
+  INACTIVE: { label: "판매 중지", className: "bg-red" },
   SOLD_OUT: { label: "품절", className: "bg-gray-300" },
 } as const;
 export interface Product {
