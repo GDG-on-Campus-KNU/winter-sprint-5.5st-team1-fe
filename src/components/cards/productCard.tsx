@@ -13,8 +13,10 @@ import { Product } from "@/types/product";
 interface ProductCardProps {
   product: Product;
 }
+
 export function ProductCard({ product }: ProductCardProps) {
   const navigate = useNavigate();
+
   return (
     <Card className="relative mx-auto w-[380px] overflow-hidden pt-0">
       <article>
@@ -23,11 +25,19 @@ export function ProductCard({ product }: ProductCardProps) {
             <Badge percentage={product.discountRate} className="bg-red" />
           </div>
           <div className="absolute inset-0 z-30 aspect-video" />
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            className="relative z-20 aspect-video w-full object-cover "
-          />
+          {product.imageUrl ? (
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="relative z-20 aspect-video w-full object-cover"
+            />
+          ) : (
+            <div className="relative z-20 aspect-video w-full bg-gray-100 flex items-center justify-center">
+              <p className="text-gray-400 text-sm">
+                상품 이미지를 준비하고 있습니다
+              </p>
+            </div>
+          )}
         </div>
         <CardHeader>
           <CardTitle className="pt-6 font-semibold text-[24px] text-gray-500">
@@ -51,7 +61,7 @@ export function ProductCard({ product }: ProductCardProps) {
             onClick={() => navigate(`/products/${product.id}`)}
           >
             상세보기
-          </Button>{" "}
+          </Button>
         </CardFooter>
       </article>
     </Card>
