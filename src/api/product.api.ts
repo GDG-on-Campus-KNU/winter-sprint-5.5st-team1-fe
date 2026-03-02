@@ -8,6 +8,19 @@ import {
 } from "@/types/product";
 import { MOCK_PRODUCTS } from "@/mocks/data/products";
 
+export interface CreateProductResponse {
+  success: boolean;
+  data: BackendProductResponse;
+  message: string;
+  error?: {
+    code: string;
+    message: string;
+    field_errors?: { field: string; message: string; }[];
+  };
+  timestamp: string;
+}
+
+// Mock 모드 (백엔드 준비되면 false로 변경)
 const USE_MOCK = false;
 
 const mockDelay = (ms = 500): Promise<void> => {
@@ -17,12 +30,18 @@ const mockDelay = (ms = 500): Promise<void> => {
 const createFormData = (data: ProductFormData): FormData => {
   const formData = new FormData();
 
-  formData.append("name", data.name);
-  formData.append("currentPrice", data.currentPrice.toString());
-  formData.append("originalPrice", data.originalPrice.toString());
-  formData.append("stock", data.stock.toString());
-  formData.append("description", data.description);
+  const requestData = {
+    name: data.name,
+    price: data.currentPrice, 
+    stock: data.stock,
+    description: data.description,
+    product_status: data.status,
+  };
 
+  formData.append(
+    "request",
+    new Blob([JSON.stringify(requestData)], { type: "application/json" })
+  );
   if (data.imageFile) {
     formData.append("image", data.imageFile);
   }
@@ -150,9 +169,7 @@ export const getAdminProducts = async (
 };
 
 // 상품 등록
-const createProductToMock = async (
-  newProduct: ProductFormData,
-): Promise<void> => {
+const createProductToMock = async (newProduct: ProductFormData,): Promise<void> => {
   await mockDelay();
 
   const newId =
@@ -188,24 +205,19 @@ const createProductToMock = async (
   MOCK_PRODUCTS.push(product);
 };
 
-const createProductToAPI = async (
-  newProduct: ProductFormData,
-): Promise<void> => {
+const createProductToAPI = async (newProduct: ProductFormData,): Promise<void> => {
   const formData = createFormData(newProduct);
 
-  const response = await fetch("/api/products", {
-    method: "POST",
-    body: formData,
+  const response = await instance.post<CreateProductResponse>("/api/v1/admin/products", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
 
-  if (!response.ok) {
-    throw new Error("상품 등록에 실패했습니다");
-  }
+  console.log("상품 등록 성공:", response.data);
 };
 
-export const createProduct = async (
-  newProduct: ProductFormData,
-): Promise<void> => {
+export const createProduct = async (newProduct: ProductFormData,): Promise<void> => {
   if (USE_MOCK) {
     return createProductToMock(newProduct);
   } else {
