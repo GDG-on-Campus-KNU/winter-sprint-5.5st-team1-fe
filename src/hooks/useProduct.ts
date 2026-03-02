@@ -1,30 +1,21 @@
-import { useState, useEffect } from "react";
-import { Product } from "../types/product.ts";
+import { useQuery } from "@tanstack/react-query";
 import { getProduct } from "../api/product.api";
 
 export const useProduct = (productId: number) => {
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: product,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["product", productId],
+    queryFn: () => getProduct(productId),
+    enabled: !!productId && !isNaN(productId),
+    retry: false,
+  });
 
-  useEffect(() => {
-    if (!productId) return;
+  const is404 =
+    (error as { response?: { status: number } })?.response?.status === 404;
 
-    const fetchProduct = async () => {
-      setLoading(true);
-      try {
-        const data = await getProduct(productId);
-        setProduct(data);
-        setError(null);
-      } catch {
-        setError("상품을 불러올 수 없습니다");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [productId]);
-
-  return { product, loading, error };
+  return { product, isLoading, error, is404, refetch };
 };
