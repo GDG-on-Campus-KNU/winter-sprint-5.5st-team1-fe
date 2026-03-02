@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { isAxiosError } from "axios";
 import { signupSchema, SignupFormInputs } from "@/schemas/auth";
+import { signupApi } from "@/api/auth.api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +17,7 @@ export default function RegisterPage() {
     register,
     handleSubmit,
     control,
+    setError,
     formState: { errors, isSubmitting, isValid },
   } = useForm<SignupFormInputs>({
     resolver: zodResolver(signupSchema),
@@ -25,13 +28,39 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: SignupFormInputs) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      console.log("가입 성공 데이터:", data);
-      navigate("/home");
+      const signupPayload = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        password: data.password,
+      };
+      const response = await signupApi(signupPayload);
+      if (response.success) {
+        alert("회원가입이 완료되었습니다. 로그인해주세요.");
+        navigate("/login");
+      }
 
     } catch (error) {
       console.error("회원가입 실패", error);
+
+      if (isAxiosError(error)) {
+        const errorData = error.response?.data?.error;
+
+        if (errorData?.field_errors) {
+          errorData.field_errors.forEach((err: { field: string; message: string }) => {
+            setError(err.field as keyof SignupFormInputs, {
+              type: "server",
+              message: err.message,
+            });
+          });
+        } else {
+          const errorMessage = errorData?.message || "회원가입 처리 중 문제가 발생했습니다.";
+          alert(errorMessage);
+        }
+      } else {
+        alert("알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      }
     }
   };
 
