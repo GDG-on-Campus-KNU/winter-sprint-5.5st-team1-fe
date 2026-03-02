@@ -1,8 +1,9 @@
-import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { isAxiosError } from "axios";
 import { signupSchema, SignupFormInputs } from "@/schemas/auth";
+import { signupApi } from "@/api/auth.api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,70 +12,55 @@ import { Loader2 } from "lucide-react";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  const [isEmailChecked, setIsEmailChecked] = React.useState(false);
 
   const {
     register,
     handleSubmit,
     control,
-    trigger,
     setError,
-    clearErrors,
     formState: { errors, isSubmitting, isValid },
   } = useForm<SignupFormInputs>({
     resolver: zodResolver(signupSchema),
     mode: "onChange",
   });
 
-  const emailValue = useWatch({
-    control,
-    name: "email",
-  })
-  const passwordValue = useWatch({
-    control,
-    name: "password",
-  });
-
-  React.useEffect(() => {
-    setIsEmailChecked(false);
-  }, [emailValue]);
-
-  const handleCheckEmail = async () => {
-    const isEmailValid = await trigger("email");
-    if (!isEmailValid || !emailValue) return;
-
-    try {
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          const isDuplicated = false;
-          if (isDuplicated) {
-            reject(new Error("이미 사용 중인 이메일입니다."));
-          } else {
-            resolve(true);
-          }
-        }, 800);
-      });
-
-      setIsEmailChecked(true);
-      clearErrors("email");
-    } catch (error) {
-      setIsEmailChecked(false);
-      const msg = error instanceof Error ? error.message : "중복 확인 오류";
-      setError("email", { type: "manual", message: msg });
-    }
-  };
+  const passwordValue = useWatch({ control, name: "password" });
 
   const onSubmit = async (data: SignupFormInputs) => {
-    if (!isEmailChecked) return;
-
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      console.log("가입 성공 데이터:", data);
-      navigate("/home");
+      const signupPayload = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        password: data.password,
+      };
+      const response = await signupApi(signupPayload);
+      if (response.success) {
+        alert("회원가입이 완료되었습니다. 로그인해주세요.");
+        navigate("/login");
+      }
 
     } catch (error) {
       console.error("회원가입 실패", error);
+
+      if (isAxiosError(error)) {
+        const errorData = error.response?.data?.error;
+
+        if (errorData?.field_errors) {
+          errorData.field_errors.forEach((err: { field: string; message: string }) => {
+            setError(err.field as keyof SignupFormInputs, {
+              type: "server",
+              message: err.message,
+            });
+          });
+        } else {
+          const errorMessage = errorData?.message || "회원가입 처리 중 문제가 발생했습니다.";
+          alert(errorMessage);
+        }
+      } else {
+        alert("알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      }
     }
   };
 
@@ -101,7 +87,6 @@ export default function RegisterPage() {
 
           <div className="space-y-2">
             <Label htmlFor="email" className="text-xl mb-2">이메일</Label>
-            <div className="flex gap-2">
               <div className="relative flex-1">
                 <Input
                   id="email"
@@ -112,18 +97,33 @@ export default function RegisterPage() {
                   {...register("email")}
                 />
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="default"
-                onClick={handleCheckEmail}
-                disabled={!!errors.email || !emailValue || isEmailChecked || isSubmitting}
-              >
-                {isEmailChecked ? "확인됨" : "중복 확인"}
-              </Button>
-            </div>
             {errors.email && <p className="text-base text-destructive">{errors.email.message}</p>}
-            {isEmailChecked && !errors.email && <p className="text-base text-green-600">사용 가능한 이메일입니다.</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-xl mb-2">연락처</Label>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="010-1234-5678"
+              className={cn("h-11 text-xl lg:text-xl", errors.phone && "border-destructive")}
+              disabled={isSubmitting}
+              {...register("phone")}
+            />
+            {errors.phone && <p className="text-base text-destructive">{errors.phone.message}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="address" className="text-xl mb-2">주소</Label>
+            <Input
+              id="address"
+              type="text"
+              placeholder="서울특별시 강남구 테헤란로 123"
+              className={cn("h-11 text-xl lg:text-xl", errors.address && "border-destructive")}
+              disabled={isSubmitting}
+              {...register("address")}
+            />
+            {errors.address && <p className="text-base text-destructive">{errors.address.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -159,7 +159,7 @@ export default function RegisterPage() {
           <Button
             className="w-full text-xl mt-4"
             size="lg"
-            disabled={isSubmitting || !isValid || !isEmailChecked}
+            disabled={isSubmitting || !isValid}
           >
             {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             {isSubmitting ? "가입 처리 중..." : "가입하기"}
