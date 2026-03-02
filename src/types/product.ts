@@ -8,6 +8,7 @@ export const STATUS_CONFIG: Record<
   INACTIVE: { label: "판매 중지", className: "bg-red" },
   SOLD_OUT: { label: "품절", className: "bg-gray-300" },
 } as const;
+
 export interface Product {
   id: number;
   name: string;
@@ -34,6 +35,7 @@ export interface ProductFormData {
   imageUrl?: string; // 기존 이미지 URL (수정 시에만 사용)
   status: ProductStatus;
 }
+
 export interface BackendProductResponse {
   id: number;
   name: string;
@@ -45,3 +47,19 @@ export interface BackendProductResponse {
   created_at: string;
   updated_at: string;
 }
+
+export const toProduct = (item: BackendProductResponse): Product => ({
+  id: item.id,
+  name: item.name,
+  description: item.description,
+  currentPrice: item.price,
+  originalPrice: item.price, // 백엔드 미지원, price로 대체
+  discountRate: 0, // 백엔드 미지원
+  rating: 0, // 백엔드 미지원
+  reviewCount: 0, // 백엔드 미지원
+  stock: item.stock,
+  shippingFee: 3000, // 백엔드 미지원, 고정값
+  freeShippingThreshold: 30000,
+  imageUrl: item.image_url ?? "",
+  status: item.product_status,
+});

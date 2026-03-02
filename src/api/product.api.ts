@@ -3,11 +3,11 @@ import {
   Product,
   ProductFormData,
   BackendProductResponse,
+  toProduct,
   ProductStatus,
 } from "@/types/product";
-import { MOCK_PRODUCTS, getProductById } from "@/mocks/data/products";
+import { MOCK_PRODUCTS } from "@/mocks/data/products";
 
-// Mock 모드 (백엔드 준비되면 false로 변경)
 const USE_MOCK = false;
 
 const mockDelay = (ms = 500): Promise<void> => {
@@ -23,35 +23,11 @@ const createFormData = (data: ProductFormData): FormData => {
   formData.append("stock", data.stock.toString());
   formData.append("description", data.description);
 
-  // 이미지가 있을 때만 추가
   if (data.imageFile) {
     formData.append("image", data.imageFile);
   }
 
   return formData;
-};
-
-const fetchProductFromMock = async (productId: number): Promise<Product> => {
-  await mockDelay();
-
-  const product = getProductById(productId);
-
-  if (!product) {
-    throw new Error("상품을 찾을 수 없습니다");
-  }
-
-  return product;
-};
-
-const fetchProductFromAPI = async (productId: number): Promise<Product> => {
-  const response = await fetch(`/api/products/${productId}`);
-
-  if (!response.ok) {
-    throw new Error("상품을 찾을 수 없습니다");
-  }
-
-  const data = await response.json();
-  return data;
 };
 
 export interface GetProductsResponse {
@@ -60,11 +36,12 @@ export interface GetProductsResponse {
 }
 
 export const getProduct = async (productId: number): Promise<Product> => {
-  if (USE_MOCK) {
-    return fetchProductFromMock(productId);
-  } else {
-    return fetchProductFromAPI(productId);
-  }
+  const response = await instance.get<{
+    success: boolean;
+    data: BackendProductResponse;
+  }>(`/api/v1/products/${productId}`);
+
+  return toProduct(response.data.data);
 };
 
 const fetchProductsFromMock = async (): Promise<Product[]> => {
@@ -253,7 +230,6 @@ const updateProductToMock = async (
 
   const updatedProduct: Product = {
     ...existingProduct,
-
     name: productData.name,
     description: productData.description,
     currentPrice: productData.currentPrice,
