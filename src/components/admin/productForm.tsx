@@ -143,7 +143,9 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                                 type="number"
                                 step="10"
                                 {...register("originalPrice")}
-                                className="h-12 text-lg lg:text-lg"
+                                // 백엔드 API에 맞춰 원가 입력 불가능하도록 처리
+                                disabled={true}
+                                className="h-12 text-lg lg:text-lg bg-gray-100 cursor-not-allowed text-gray-400" 
                             />
                         </div>
                         <div className="space-y-3">
