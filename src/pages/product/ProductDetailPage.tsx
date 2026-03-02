@@ -19,7 +19,8 @@ const ProductDetailPage = () => {
 
   if (error || !product) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen"
+      >
         <div className="text-xl text-red-500">
           {error || "상품을 찾을 수 없습니다"}
         </div>
