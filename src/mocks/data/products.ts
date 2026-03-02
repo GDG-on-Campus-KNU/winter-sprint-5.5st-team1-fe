@@ -223,7 +223,7 @@ export const MOCK_PRODUCTS: Product[] = [
     freeShippingThreshold: 100000,
     imageUrl:
       "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500",
-    status: "DELETED",
+    status: "INACTIVE",
   },
   {
     id: 15,
