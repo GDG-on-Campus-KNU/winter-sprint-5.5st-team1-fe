@@ -46,7 +46,10 @@ export default function CartPage() {
   };
 
   const handleOrder = () => {
-    navigate("/order");
+    const selectedItems = items.filter((item) =>
+      validCheckedIds.includes(item.productId),
+    );
+    navigate("/order", { state: { selectedItems } });
   };
 
   const totalPrice = calcTotal(validCheckedIds);
