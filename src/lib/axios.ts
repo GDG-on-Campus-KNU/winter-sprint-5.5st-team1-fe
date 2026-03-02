@@ -7,7 +7,7 @@ const instance = axios.create({
 // 요청 - 토큰 자동 첨부
 instance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("accessToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -32,7 +32,7 @@ instance.interceptors.response.use(
 
         const { data } = await axios.post(
           `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh`,
-          { refresh_token: refreshToken }
+          { refresh_token: refreshToken },
         );
 
         if (data.success && data.data) {
@@ -49,7 +49,7 @@ instance.interceptors.response.use(
       } catch (refreshError) {
         localStorage.removeItem("authToken");
         localStorage.removeItem("refreshToken");
-        window.location.href = "/login"
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }

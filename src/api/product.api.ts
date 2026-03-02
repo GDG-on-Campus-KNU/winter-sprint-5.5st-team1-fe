@@ -3,11 +3,12 @@ import {
   Product,
   ProductFormData,
   BackendProductResponse,
+  ProductStatus,
 } from "@/types/product";
 import { MOCK_PRODUCTS, getProductById } from "@/mocks/data/products";
 
 // Mock 모드 (백엔드 준비되면 false로 변경)
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 const mockDelay = (ms = 500): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -124,6 +125,51 @@ export const getProducts = async (
   } else {
     return fetchProductsFromAPI(page, sortBy);
   }
+};
+
+export const getAdminProducts = async (
+  page: number = 1,
+  status: string = "ALL",
+  keyword: string = "",
+): Promise<GetProductsResponse> => {
+  if (USE_MOCK) {
+    return { products: MOCK_PRODUCTS, totalPages: 1 }; // 임시(목데이터용)
+  }
+
+  const apiStatus = status === "ALL" ? undefined : status;
+  const search = keyword.trim() === "" ? undefined : keyword;
+
+  const response = await instance.get("/api/v1/admin/products", {
+    params: {
+      page,
+      limit: 5,
+      status: apiStatus,
+      search: search,
+    },
+  });
+
+  const products: Product[] = response.data.data.products.map(
+    (item: BackendProductResponse): Product => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      currentPrice: item.price,
+      originalPrice: item.price, // 임시
+      discountRate: 0, // 임시
+      rating: 0, // 임시
+      reviewCount: 0, // 임시
+      stock: item.stock,
+      shippingFee: 3000,
+      freeShippingThreshold: 50000,
+      imageUrl: item.image_url,
+      status: item.product_status as ProductStatus, // 백엔드 string을 프론트 타입으로 단언
+    }),
+  );
+
+  return {
+    products,
+    totalPages: response.data.data.pagination.total_pages,
+  };
 };
 
 // 상품 등록

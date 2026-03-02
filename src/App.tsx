@@ -6,7 +6,7 @@ import ProductDetailPage from "./pages/product/ProductDetailPage";
 import OrderPage from "./pages/order/OrderPage";
 import OrderCompletePage from "./pages/order/OrderCompletePage";
 import CartPage from "./pages/CartPage";
-import ManagePage from "./pages/AdminProductPage";
+import ManagePage from "./pages/admin/AdminProductPage";
 import MyPage from "./pages/MyPage";
 import Private from "./components/private";
 import ProductCreatePage from "./pages/admin/ProductCreatePage";

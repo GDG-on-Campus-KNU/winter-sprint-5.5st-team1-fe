@@ -1,43 +1,59 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { useQueryState, parseAsInteger, parseAsString } from 'nuqs';
 import { AdminItemList } from "@/components/admin/adminItemList";
-import { MOCK_PRODUCTS } from "@/mocks/data/products";
-import { STATUS_CONFIG, ProductStatus } from "@/types/product";
+import { STATUS_CONFIG, ProductStatus, Product } from "@/types/product";
+import { getAdminProducts } from "@/api/product.api";
 import { BadgePlus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/pagination";
 import { StateFilter } from "@/components/admin/stateFilter";
+import { Loading } from "@/components/loading";
 
 const FILTER_STATES = [
     { id: "ALL", label: "전체 상태" },
     ...(Object.entries(STATUS_CONFIG).map(([key, value]) => ({ id: key as ProductStatus, label: value.label, })))
 ]
 function AdminProductPage() {
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useQueryState("page", parseAsInteger.withDefault(1));
     const [selectedFilterId, setSelectedFilterId] = useQueryState("status", parseAsString.withDefault("ALL"));
     const [activeSearchWord, setActiveSearchWord] = useQueryState("keyword", parseAsString.withDefault(""));
     const [searchWord, setSearchWord] = useState(activeSearchWord);
-    const itemsPerPage = 5;
+
+    const [products, setProducts] = useState<Product[]>([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(true);
 
     const handleSearch = () => {
         setActiveSearchWord(searchWord);
         setCurrentPage(1);
     };
 
-    const filteredItems = useMemo(() => {
-        return MOCK_PRODUCTS.filter(item => {
-            const matchesStatus = selectedFilterId === "ALL" || item.status === selectedFilterId; // 상태
-            const matchesSearch = item.name.toLowerCase().includes(activeSearchWord.toLowerCase()); // 검색어
-            return matchesStatus && matchesSearch;
-        });
-    }, [selectedFilterId, activeSearchWord]);
+    useEffect(() => {
+        const fetchAdminData = async () => {
+            setLoading(true);
+            try {
+                const response = await getAdminProducts(currentPage, selectedFilterId, activeSearchWord);
+                setProducts(response.products);
+                setTotalPages(response.totalPages);
+            } catch (error) {
+                console.error("관리자 상품 목록을 불러오지 못했습니다.", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+        fetchAdminData();
+    }, [currentPage, selectedFilterId, activeSearchWord]);
 
-    const currentDisplayItems = useMemo(() => {
-        const start = (currentPage - 1) * itemsPerPage;
-        return filteredItems.slice(start, start + itemsPerPage);
-    }, [filteredItems, currentPage]);
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Loading />
+            </div>
+        );
+    }
 
     return (
         <main className="w-full min-h-screen py-10 px-[120px]">
@@ -46,7 +62,9 @@ function AdminProductPage() {
                     <h1 className="text-[32px] font-semibold text-gray-500 ml-2 text-left">
                         상품 관리
                     </h1>
-                    <button className="flex items-center rounded-lg text-[24px] px-4 h-14 gap-2 bg-pink-500 text-primary-foreground shadow hover:bg-pink-500/80">
+                    <button
+                        onClick={() => navigate("/admin/product/new")}
+                        className="flex items-center rounded-lg text-[24px] px-4 h-14 gap-2 bg-pink-500 text-primary-foreground shadow hover:bg-pink-500/80">
                         <BadgePlus size={28} />
                         새 상품 등록
                     </button>
@@ -79,7 +97,7 @@ function AdminProductPage() {
                         }}
                     />
                 </div>
-                <AdminItemList items={currentDisplayItems} />
+                <AdminItemList items={products} />
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
