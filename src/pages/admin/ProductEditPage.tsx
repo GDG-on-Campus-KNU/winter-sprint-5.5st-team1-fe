@@ -19,7 +19,6 @@ export default function ProductManagePage() {
         select: (data: Product): ProductFormData => ({
             name: data.name,
             currentPrice: data.currentPrice,
-            originalPrice: data.originalPrice,
             stock: data.stock,
             description: data.description,
             status: data.status,
