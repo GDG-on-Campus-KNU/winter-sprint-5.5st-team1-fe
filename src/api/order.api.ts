@@ -37,11 +37,11 @@ const fetchOrderFromMock = async (id: string): Promise<OrderCompleteData> => {
         phone: "010-1234-5678",
         deliveryMessage: "문 앞에 놔주세요.",
         items: [
-            { name: "게이밍 키보드", quantity: 1 },
-            { name: "무선 게이밍 마우스", quantity: 2 },
-            { name: "장패드", quantity: 5 }
+        { name: "게이밍 키보드", quantity: 1 },
+        { name: "무선 게이밍 마우스", quantity: 2 },
+        { name: "장패드", quantity: 5 },
         ],
-        totalPrice: 245000
+    totalPrice: 245000,
     };
 };
 
@@ -79,4 +79,37 @@ export const fetchOrderData = async (id: string): Promise<OrderCompleteData> => 
     } else {
         return fetchOrderFromAPI(id);
     }
+};
+
+export interface OrderPayload {
+    items: {
+        product_id: number;
+        quantity: number;
+    }[];
+    user_coupon_id: number | null;
+    recipient_name: string;
+    recipient_phone: string;
+    delivery_address: string;
+    delivery_detail_address: string;
+    delivery_message: string;
 }
+
+export const fetchAvailableCouponsAPI = async () => {
+    // 주문서 작성에 필요해서 여기서 호출!
+    const { data } = await instance.get("/api/v1/my/coupons", {
+        params: { status: "AVAILABLE" },
+    });
+    return data;
+};
+
+export const createOrderAPI = async (orderPayload: OrderPayload) => {
+    const { data } = await instance.post("/api/v1/orders", orderPayload);
+    return data;
+};
+
+export const deleteCartItemsAPI = async (itemIds: number[]) => {
+    const { data } = await instance.delete("/api/v1/cart/items", {
+        data: { item_ids: itemIds },
+    });
+    return data;
+};

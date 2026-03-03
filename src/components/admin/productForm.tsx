@@ -14,7 +14,6 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const productSchema = z.object({
     name: z.string().min(1, { message: "상품명을 입력해주세요." }),
     currentPrice: z.coerce.number().min(0, { message: "0원 이상이어야 합니다." }),
-    originalPrice: z.coerce.number().min(0, { message: "0원 이상이어야 합니다." }),
     stock: z.coerce.number().min(0, { message: "재고는 0개 이상이어야 합니다." }),
     status: z.string(),
     description: z.string().min(10, { message: "상품 설명은 10자 이상이어야 합니다." }),
@@ -45,7 +44,6 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
         defaultValues: {
             name: initialData?.name || "",
             currentPrice: initialData?.currentPrice || 0,
-            originalPrice: initialData?.originalPrice || 0,
             stock: initialData?.stock || 0,
             status: initialData?.status || "ACTIVE",
             description: initialData?.description || "",
@@ -73,10 +71,9 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
 
                 <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-6 h-full lg:col-span-1">
                     <h3 className="text-2xl font-semibold text-gray-500 border-b pb-3">기본 정보</h3>
-                    
                     <div className="space-y-4 mb-10">
                         <Label className="text-xl font-medium text-gray-400">상품 이미지 <span className="text-pink-500">*</span></Label>
-                        <Controller // 커스텀 컴포넌트
+                        <Controller
                             control={control} 
                             name="imageFile"
                             render={({ field }) => (
@@ -87,7 +84,6 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                             )}
                         />
                     </div>
-
                     <div className="space-y-4">
                         <Label htmlFor="name" className="text-xl font-medium text-gray-400">상품명 <span className="text-pink-500">*</span></Label>
                         <Input
@@ -102,8 +98,7 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
 
                 <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-8 h-full lg:col-span-2">
                     <h3 className="text-2xl font-semibold text-gray-500 border-b pb-4">상세 정보</h3>
-
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-3 gap-6">
                         <div className="space-y-3">
                             <Label htmlFor="stock" className="text-xl font-medium text-gray-400">재고 (개) <span className="text-pink-500">*</span></Label>
                             <Input
@@ -132,22 +127,7 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                                     </Select>
                                 )}
                             />
-                        </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-6">
-                        <div className="space-y-3">
-                            <Label htmlFor="originalPrice" className="text-xl font-medium text-gray-400">원가 (원)</Label>
-                            <Input
-                                id="originalPrice"
-                                type="number"
-                                step="10"
-                                {...register("originalPrice")}
-                                // 백엔드 API에 맞춰 원가 입력 불가능하도록 처리
-                                readOnly={true}
-                                className="h-12 text-lg lg:text-lg bg-gray-100 cursor-not-allowed text-gray-400" 
-                            />
-                        </div>
+                        </div>                    
                         <div className="space-y-3">
                             <Label htmlFor="currentPrice" className="text-xl font-medium text-gray-400">판매가 (원) <span className="text-pink-500">*</span></Label>
                             <Input
@@ -160,7 +140,6 @@ export function ProductForm({ initialData, onSubmit }: ProductFormProps) {
                             {errors.currentPrice && <p className="text-red-500 text-sm">{errors.currentPrice.message}</p>}
                         </div>
                     </div>
-
                     <div className="space-y-3">
                         <Label htmlFor="description" className="text-xl font-medium text-gray-400">상품 설명 <span className="text-pink-500">*</span></Label>
                         <Textarea
