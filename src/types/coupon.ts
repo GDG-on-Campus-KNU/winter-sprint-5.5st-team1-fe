@@ -4,4 +4,6 @@ export interface Coupon {
   discountRate: number;
   minOrderPrice: number;
   expiryDate: string;
+  couponType: "PERCENTAGE" | "FIXED" | string;
+  available: boolean;
 }

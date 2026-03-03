@@ -6,6 +6,10 @@ export const OrderFormSchema = z.object({
       id: z.number(),
       title: z.string(),
       discountRate: z.number(),
+      couponType: z.string(),
+      minOrderPrice: z.number().optional(),
+      expiryDate: z.string().optional(),
+      available: z.boolean().optional(),
     })
     .nullable(),
 
