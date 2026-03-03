@@ -47,6 +47,17 @@ function AdminProductPage() {
         fetchAdminData();
     }, [fetchAdminData]);
 
+    useEffect(() => {
+        const handleFocus = () => {
+            fetchAdminData();
+        };
+
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchAdminData]);
+
     const handleDelete = async (productId: number) => {
         if (window.confirm("정말로 이 상품을 삭제하시겠습니까?")) {
             try {
