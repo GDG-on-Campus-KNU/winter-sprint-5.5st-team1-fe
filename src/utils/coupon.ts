@@ -11,12 +11,7 @@ export const getAvailableCoupons = (
   coupons: Coupon[],
   orderPrice: number,
 ): Coupon[] => {
-  const today = new Date().toLocaleDateString("sv-SE");
-
   return coupons.filter((coupon) => {
-    const isPriceValid = orderPrice >= coupon.minOrderPrice;
-    const isNotExpired = coupon.expiryDate >= today;
-
-    return isPriceValid && isNotExpired;
+    return coupon.available && orderPrice >= coupon.minOrderPrice;
   });
 };
