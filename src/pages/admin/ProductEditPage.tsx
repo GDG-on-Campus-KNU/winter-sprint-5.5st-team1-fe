@@ -1,3 +1,4 @@
+import { isAxiosError } from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Product, ProductFormData } from "@/types/product";
@@ -37,7 +38,12 @@ export default function ProductManagePage() {
             navigate("/admin/product");
         },
         onError: (err) => {
-            alert("상품 수정에 실패했습니다: " + err);
+            if (isAxiosError(err)) {
+                const errorMessage = err.response?.data?.message || "알 수 없는 오류가 발생했습니다.";
+                alert(`상품 수정에 실패했습니다.\n${errorMessage}`);
+            } else {
+                alert("상품 수정 중 통신 문제가 발생했습니다.");
+            }
         }
     });
 

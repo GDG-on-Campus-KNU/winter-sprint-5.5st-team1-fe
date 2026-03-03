@@ -263,26 +263,20 @@ const updateProductToMock = async (
   MOCK_PRODUCTS[index] = updatedProduct;
 };
 
-const updateProductToAPI = async (
-  productId: number,
-  productData: ProductFormData,
-): Promise<void> => {
+const updateProductToAPI = async (productId: number, productData: ProductFormData,): Promise<void> => {
   const formData = createFormData(productData);
 
-  const response = await fetch(`/api/products/${productId}`, {
-    method: "PUT",
-    body: formData,
-  });
+  const response = await instance.patch(`/api/v1/admin/products/${productId}`, formData,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 
-  if (!response.ok) {
-    throw new Error("상품 수정에 실패했습니다");
-  }
+  console.log("상품 수정 성공:", response.data);
 };
 
-export const updateProduct = async (
-  productId: number,
-  productData: ProductFormData,
-): Promise<void> => {
+export const updateProduct = async (productId: number, productData: ProductFormData,): Promise<void> => {
   if (USE_MOCK) {
     return updateProductToMock(productId, productData);
   } else {
