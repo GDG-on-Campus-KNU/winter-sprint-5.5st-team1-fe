@@ -65,7 +65,7 @@ export const getProduct = async (productId: number): Promise<Product> => {
 
 const fetchProductsFromMock = async (): Promise<Product[]> => {
   await mockDelay();
-  return MOCK_PRODUCTS;
+  return MOCK_PRODUCTS.filter((product) => product.status === "ACTIVE");
 };
 
 const fetchProductsFromAPI = async (
@@ -81,6 +81,7 @@ const fetchProductsFromAPI = async (
       limit: 15,
       sort,
       order,
+      status: "ACTIVE",
     },
   });
 

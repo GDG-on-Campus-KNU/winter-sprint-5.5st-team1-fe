@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQueryState, parseAsString, parseAsInteger } from "nuqs";
 import { getProducts } from "@/api/product.api";
 import { Product } from "@/types/product";
@@ -19,23 +19,23 @@ function ProductPage() {
     const [currentPage, setCurrentPage] = useQueryState("page", parseAsInteger.withDefault(1));
     const [totalPages, setTotalPages] = useState(1);
 
-    useEffect(() => {
-        const fetchProductData = async () => {
-            setLoading(true);
-            try {
-                const response = await getProducts(currentPage, sortBy);
+    const fetchProductData = useCallback(async () => {
+        setLoading(true);
+        try {
+            const response = await getProducts(currentPage, sortBy);
 
-                setProducts(response.products);
-                setTotalPages(response.totalPages);
-            } catch (error) {
-                console.error("상품 데이터를 불러오는 중 오류 발생:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProductData();
+            setProducts(response.products);
+            setTotalPages(response.totalPages);
+        } catch (error) {
+            console.error("상품 데이터를 불러오는 중 오류 발생:", error);
+        } finally {
+            setLoading(false);
+        }
     }, [currentPage, sortBy]);
+
+    useEffect(() => {
+        fetchProductData();
+    }, [fetchProductData]);
 
     useEffect(() => {
         if (!loading && totalPages > 0 && currentPage > totalPages) {
