@@ -21,15 +21,11 @@ export function AdminItem({ item }: AdminItemProps) {
                 <h4 className="text-[24px] font-semibold text-gray-500 truncate">
                     {item.name}
                 </h4>
-                <Badge className="bg-red" percentage={item.discountRate} />
             </div>
             <div className="flex min-w-0 overflow-hidden">
                 <div className="flex pl-8 flex-col w-60 justify-center">
                     <span className="text-pink-500 font-semibold text-[24px]">
                         ₩{item.currentPrice.toLocaleString()}
-                    </span>
-                    <span className="text-gray-300 line-through font-regular text-[20px]">
-                        ₩{item.originalPrice.toLocaleString()}
                     </span>
                 </div>
             </div>
