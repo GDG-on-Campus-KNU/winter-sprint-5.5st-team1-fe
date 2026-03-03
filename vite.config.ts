@@ -1,18 +1,27 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig({
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://winter-sprint.kro.kr",
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@components': path.resolve(__dirname, './src/components'),
-      '@pages': path.resolve(__dirname, './src/pages'),
-      '@hooks': path.resolve(__dirname, './src/hooks'),
-      '@api': path.resolve(__dirname, './src/api'),
-      '@types': path.resolve(__dirname, './src/types'),
-      '@utils': path.resolve(__dirname, './src/utils'),
+      "@": path.resolve(__dirname, "./src"),
+      "@components": path.resolve(__dirname, "./src/components"),
+      "@pages": path.resolve(__dirname, "./src/pages"),
+      "@hooks": path.resolve(__dirname, "./src/hooks"),
+      "@api": path.resolve(__dirname, "./src/api"),
+      "@types": path.resolve(__dirname, "./src/types"),
+      "@utils": path.resolve(__dirname, "./src/utils"),
     },
   },
-})
+});

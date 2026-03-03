@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useQueryState, parseAsInteger, parseAsString } from 'nuqs';
 import { AdminItemList } from "@/components/admin/adminItemList";
 import { STATUS_CONFIG, ProductStatus, Product } from "@/types/product";
-import { getAdminProducts } from "@/api/product.api";
+import { getAdminProducts, deleteProduct } from "@/api/product.api";
 import { BadgePlus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/pagination";
@@ -30,22 +30,46 @@ function AdminProductPage() {
         setCurrentPage(1);
     };
 
+    const fetchAdminData = useCallback(async () => {
+        setLoading(true);
+        try {
+            const response = await getAdminProducts(currentPage, selectedFilterId, activeSearchWord);
+            setProducts(response.products);
+            setTotalPages(response.totalPages);
+        } catch (error) {
+            console.error("관리자 상품 목록을 불러오지 못했습니다.", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [currentPage, selectedFilterId, activeSearchWord]);
+
     useEffect(() => {
-        const fetchAdminData = async () => {
-            setLoading(true);
-            try {
-                const response = await getAdminProducts(currentPage, selectedFilterId, activeSearchWord);
-                setProducts(response.products);
-                setTotalPages(response.totalPages);
-            } catch (error) {
-                console.error("관리자 상품 목록을 불러오지 못했습니다.", error);
-            } finally {
-                setLoading(false);
-            }
+        fetchAdminData();
+    }, [fetchAdminData]);
+
+    useEffect(() => {
+        const handleFocus = () => {
+            fetchAdminData();
         };
 
-        fetchAdminData();
-    }, [currentPage, selectedFilterId, activeSearchWord]);
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchAdminData]);
+
+    const handleDelete = async (productId: number) => {
+        if (window.confirm("정말로 이 상품을 삭제하시겠습니까?")) {
+            try {
+                await deleteProduct(productId);
+                alert("상품이 성공적으로 삭제되었습니다.");
+                fetchAdminData();
+            } catch (error) {
+                console.error("상품 삭제 실패:", error);
+                alert("상품 삭제에 실패했습니다. 다시 시도해 주세요.");
+            }
+        }
+    };
 
     if (loading) {
         return (
@@ -97,7 +121,7 @@ function AdminProductPage() {
                         }}
                     />
                 </div>
-                <AdminItemList items={products} />
+                <AdminItemList items={products} onDelete={handleDelete} />
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}

@@ -2,12 +2,16 @@ import { AdminItem } from "./adminItem";
 import { Product } from "@/types/product";
 import { Card, CardContent } from "@/components/ui/card";
 import { PackageOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface AdminItemListProps {
     items: Product[];
+    onDelete: (productId: number) => void;
 }
 
-export function AdminItemList({ items }: AdminItemListProps) {
+export function AdminItemList({ items, onDelete }: AdminItemListProps) {
+    const navigate = useNavigate();
+
     return (
         <section className="w-full" aria-label="상품 목록">
             <Card className="flex flex-col w-full border border-gray-200 rounded-xl bg-white overflow-hidden p-0 gap-0">
@@ -26,6 +30,8 @@ export function AdminItemList({ items }: AdminItemListProps) {
                                 <li key={product.id} className="w-full border-b border-gray-200 [&:nth-child(5)]:border-none">
                                     <AdminItem
                                         item={product}
+                                        onEdit={() => navigate(`/admin/product/${product.id}`)}
+                                        onDelete={() => onDelete(product.id)}
                                     />
                                 </li>
                             ))}

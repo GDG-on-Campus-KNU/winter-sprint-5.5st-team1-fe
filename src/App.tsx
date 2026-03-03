@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { Layout } from "./components/layouts/MainLayout";
+import { useEffect } from "react";
+import { useAuthStore } from "@/stores/auth.store";
 import ProductPage from "./pages/product/ProductPage";
 import ProductDetailPage from "./pages/product/ProductDetailPage";
 import OrderPage from "./pages/order/OrderPage";
@@ -14,6 +16,12 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 
 function App() {
+  const hydrate = useAuthStore((s) => s.hydrate);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
   return (
     <Routes>
       <Route element={<Layout />}>

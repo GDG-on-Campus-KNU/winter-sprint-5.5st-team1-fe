@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { Badge } from "@/components/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,9 +20,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <Card className="relative mx-auto w-[380px] overflow-hidden pt-0">
       <article>
         <div className="relative">
-          <div className="absolute left-6 top-6 z-40">
-            <Badge percentage={product.discountRate} className="bg-red" />
-          </div>
+
           <div className="absolute inset-0 z-30 aspect-video" />
           {product.imageUrl ? (
             <img
@@ -46,10 +43,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <CardDescription className="font-regular text-[20px] text-gray-300">
             {product.description}
           </CardDescription>
-          <div className="mt-2 pb-4 flex items-baseline gap-2">
-            <span className="text-gray-300 line-through font-regular text-[20px]">
-              ₩{product.originalPrice.toLocaleString()}
-            </span>
+          <div className="pb-4 flex items-baseline gap-2">
             <span className="text-red font-semibold text-[24px]">
               ₩{product.currentPrice.toLocaleString()}
             </span>

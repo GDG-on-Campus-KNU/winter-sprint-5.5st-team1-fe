@@ -6,9 +6,11 @@ import { STATUS_CONFIG } from "@/types/product";
 
 interface AdminItemProps {
     item: Product;
+    onEdit: () => void;
+    onDelete: () => void;
 }
 
-export function AdminItem({ item }: AdminItemProps) {
+export function AdminItem({ item, onEdit, onDelete }: AdminItemProps) {
     const config = STATUS_CONFIG[item.status];
     return (
         <article className="flex w-full items-stretch divide-x divide-gray-200 py-6">
@@ -21,15 +23,11 @@ export function AdminItem({ item }: AdminItemProps) {
                 <h4 className="text-[24px] font-semibold text-gray-500 truncate">
                     {item.name}
                 </h4>
-                <Badge className="bg-red" percentage={item.discountRate} />
             </div>
             <div className="flex min-w-0 overflow-hidden">
                 <div className="flex pl-8 flex-col w-60 justify-center">
                     <span className="text-pink-500 font-semibold text-[24px]">
                         ₩{item.currentPrice.toLocaleString()}
-                    </span>
-                    <span className="text-gray-300 line-through font-regular text-[20px]">
-                        ₩{item.originalPrice.toLocaleString()}
                     </span>
                 </div>
             </div>
@@ -43,10 +41,14 @@ export function AdminItem({ item }: AdminItemProps) {
             </div>
             <div className="flex items-center justify-center w-40">
                 <div className="flex border border-gray-200 rounded-lg overflow-hidden">
-                    <button className="p-2 text-pink-500 hover:bg-pink-500/10 transition-colors border-pink-500">
+                    <button
+                        onClick={onEdit}
+                        className="p-2 text-pink-500 hover:bg-pink-500/10 transition-colors border-pink-500">
                         <Pencil size={24} />
                     </button>
-                    <button className="p-2 text-red hover:bg-red/10 transition-colors border-red">
+                    <button
+                        onClick={onDelete}
+                        className="p-2 text-red hover:bg-red/10 transition-colors border-red">
                         <Trash size={24} />
                     </button>
                 </div>

@@ -7,15 +7,10 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCartStore } from "@/stores/cart.store";
-
-type UserRole = "user" | "admin";
-
-interface User {
-  role: UserRole;
-}
+import { useAuthStore } from "@/stores/auth.store";
 
 export default function Header() {
-  const user: User | null = { role: "user" };
+  const user = useAuthStore((s) => s.user);
   const itemCount = useCartStore((state) => state.itemCount);
 
   return (
@@ -42,7 +37,7 @@ export default function Header() {
         </nav>
       )}
 
-      {user?.role === "user" && (
+      {user?.role === "USER" && (
         <nav
           aria-label="사용자 메뉴"
           className="flex items-center gap-6 font-medium text-[24px]"
@@ -73,15 +68,15 @@ export default function Header() {
         </nav>
       )}
 
-      {user?.role === "admin" && (
+      {user?.role === "ADMIN" && (
         <nav
           aria-label="관리자 메뉴"
           className="flex items-center gap-6 font-medium text-[24px]"
         >
-          <button className="flex items-center gap-2">
+          <Link to="/admin/product" className="flex items-center gap-2">
             <ScrollText className="w-7 h-7" />
             상품 관리
-          </button>
+          </Link>
           <button
             className="flex items-center gap-2"
             onClick={() => {
