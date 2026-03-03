@@ -40,7 +40,7 @@ export default function OrderCompletePage() {
     if (isError || !orderData) {
         return (
             <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
-                <h2 className="text-2xl font-bold text-gray-500 mb-4">주문 정보를 불러올 수 없습니다.</h2>
+                <h2 className="text-2xl font-bold text-gray-500 mb-7">주문 정보를 불러올 수 없습니다.</h2>
                 <Button onClick={() => navigate("/mypage/orders")} variant="outline">주문 내역으로 이동</Button>
             </div>
         );
@@ -73,7 +73,7 @@ export default function OrderCompletePage() {
                 <Button
                     type="button"
                     className="h-15 flex-1 text-xl"
-                    onClick={() => navigate("/product")}
+                    onClick={() => navigate("/")}
                 >
                     쇼핑 계속하기
                 </Button>
@@ -82,7 +82,7 @@ export default function OrderCompletePage() {
                     type="button"
                     variant="outline"
                     className="h-15 flex-1 text-xl"
-                    onClick={() => navigate("/mypage/cart")} // 주문 내역 경로 넣기
+                    onClick={() => navigate("/mypage")} // 주문 내역 경로 넣기
                 >
                     주문 내역 보기
                 </Button>

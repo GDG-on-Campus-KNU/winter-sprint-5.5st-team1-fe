@@ -1,5 +1,25 @@
+import instance from "@/lib/axios";
 import { OrderCompleteData } from "@/components/cards/order/orderCompleteListCard";
-const USE_MOCK = true;
+
+const USE_MOCK = false;
+
+export interface OrderResponse {
+    order: {
+        id: number;
+        order_status: string;
+        recipient_name: string;
+        recipient_phone: string;
+        delivery_address: string;
+        delivery_detail_address: string;
+        delivery_message: string;
+        final_price: number;
+        created_at: string;
+    };
+    order_items: {
+        product_name: string;
+        quantity: number;
+    }[];
+}
 
 const mockDelay = (ms = 500): Promise<void> => {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -25,15 +45,32 @@ const fetchOrderFromMock = async (id: string): Promise<OrderCompleteData> => {
     };
 };
 
-const fetchOrderFromAPI = async (id: string): Promise<OrderCompleteData> => {
-    const response = await fetch(`/api/orders/${id}`);
+const fetchOrderFromAPI = async (order_id: string): Promise<OrderCompleteData> => {
+    const response = await instance.get<{
+        success: boolean;
+        data: OrderResponse;
+        message: string;
+    }>(`/api/v1/orders/${order_id}`);
     
-    if (!response.ok) {
-        throw new Error("주문 정보를 불러오는데 실패했습니다.");
-    }
+    const { order, order_items } = response.data.data;
 
-    const data = await response.json();
-    return data;
+    const dateObj = new Date(order.created_at);
+    const formattedDate = `${dateObj.getFullYear()}년 ${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일`;
+
+    return {
+        orderNumber: order.id.toString(),
+        status: order.order_status === "PENDING" ? "결제완료" : order.order_status, 
+        orderDate: formattedDate,
+        address: `${order.delivery_address} ${order.delivery_detail_address}`.trim(),
+        recipient: order.recipient_name,
+        phone: order.recipient_phone,
+        deliveryMessage: order.delivery_message,
+        items: order_items.map(item => ({
+            name: item.product_name,
+            quantity: item.quantity
+        })),
+        totalPrice: order.final_price
+    };
 };
 
 export const fetchOrderData = async (id: string): Promise<OrderCompleteData> => {
@@ -42,4 +79,4 @@ export const fetchOrderData = async (id: string): Promise<OrderCompleteData> => 
     } else {
         return fetchOrderFromAPI(id);
     }
-};
+}
