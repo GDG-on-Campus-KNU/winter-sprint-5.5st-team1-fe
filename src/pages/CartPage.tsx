@@ -17,14 +17,19 @@ export default function CartPage() {
     calcTotal,
   } = useCart();
 
-  const [checkedIds, setCheckedIds] = useState<number[]>(() =>
-    items.map((i) => i.productId),
+  const [checkedIds, setCheckedIds] = useState<number[]>([]);
+
+  const validCheckedIds = checkedIds.filter((id) =>
+    items.some((item) => item.productId === id),
   );
 
-  const isAllChecked = items.length > 0 && checkedIds.length === items.length;
+  const allProductIds = items.map((i) => i.productId);
+  const isAllChecked =
+    items.length > 0 &&
+    allProductIds.every((id) => validCheckedIds.includes(id));
 
   const handleAllCheck = () => {
-    setCheckedIds(isAllChecked ? [] : items.map((i) => i.productId));
+    setCheckedIds(isAllChecked ? [] : allProductIds);
   };
 
   const handleCheck = (productId: number) => {
@@ -36,15 +41,18 @@ export default function CartPage() {
   };
 
   const handleDeleteSelected = async () => {
-    await handleRemoveSelected(checkedIds);
+    await handleRemoveSelected(validCheckedIds);
     setCheckedIds([]);
   };
 
   const handleOrder = () => {
-    navigate("/order");
+    const selectedItems = items.filter((item) =>
+      validCheckedIds.includes(item.productId),
+    );
+    navigate("/order", { state: { selectedItems } });
   };
 
-  const totalPrice = calcTotal(checkedIds);
+  const totalPrice = calcTotal(validCheckedIds);
 
   if (items.length === 0) {
     return (
@@ -63,12 +71,10 @@ export default function CartPage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)]">
-      {/* 상품 영역: 스크롤 가능 */}
       <div className="flex-1 overflow-y-auto min-h-0">
         <div className="max-w-2xl mx-auto px-4 pt-6">
           <h1 className="mb-6 text-[24px] font-bold text-gray-500">장바구니</h1>
 
-          {/* 전체 선택 / 선택 삭제 */}
           <div className="mb-4 flex items-center justify-between">
             <label className="flex cursor-pointer items-center gap-2 text-[15px] text-gray-400">
               <input
@@ -77,24 +83,23 @@ export default function CartPage() {
                 onChange={handleAllCheck}
                 className="h-5 w-5 accent-pink-500"
               />
-              전체 선택 ({checkedIds.length}/{items.length})
+              전체 선택 ({validCheckedIds.length}/{items.length})
             </label>
             <button
               onClick={handleDeleteSelected}
-              disabled={checkedIds.length === 0}
-              className="text-[14px] text-gray-300 hover:text-red disabled:opacity-30 transition-colors"
+              disabled={validCheckedIds.length === 0}
+              className="text-[14px] text-gray-300 hover:text-red-400 disabled:opacity-30 transition-colors"
             >
               선택 삭제
             </button>
           </div>
 
-          {/* 상품 목록 */}
           <div className="flex flex-col gap-3 mb-6">
             {items.map((item) => (
               <CartItem
                 key={item.productId}
                 item={item}
-                isChecked={checkedIds.includes(item.productId)}
+                isChecked={validCheckedIds.includes(item.productId)}
                 onCheck={handleCheck}
                 onUpdateQuantity={handleUpdateQuantity}
                 onRemove={(productId) => {
@@ -109,12 +114,12 @@ export default function CartPage() {
         </div>
       </div>
 
-      <div className="shrink-0 ">
+      <div className="shrink-0">
         <div className="max-w-2xl mx-auto px-4 pb-6 pt-4">
           <CartSummary
             totalPrice={totalPrice}
             deliveryFee={DELIVERY_FEE}
-            selectedCount={checkedIds.length}
+            selectedCount={validCheckedIds.length}
             onOrder={handleOrder}
           />
         </div>

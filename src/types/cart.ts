@@ -1,27 +1,25 @@
 export interface CartItemResponse {
-  productId: number;
-  productName: string;
-  productPrice: number;
-  productStatus: string;
-  //  storeId?: number;
-  //  storeName?: string;
+  product_id: number;
+  product_name: string;
+  product_price: number;
+  product_status: string;
   quantity: number;
   subtotal: number;
-  isAvailable: boolean;
-  createdAt: string;
-  updatedAt: string;
+  is_available: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CartSummary {
-  totalItems: number;
-  totalQuantity: number;
-  totalProductPrice: number;
-  deliveryFee: number;
-  finalPrice: number;
+  total_items: number;
+  total_quantity: number;
+  total_product_price: number;
+  delivery_fee: number;
+  final_price: number;
 }
 
 export interface CartResponse {
-  userId: number;
+  user_id: number;
   items: CartItemResponse[];
   summary: CartSummary;
 }
