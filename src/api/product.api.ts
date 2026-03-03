@@ -182,15 +182,8 @@ const createProductToMock = async (newProduct: ProductFormData,): Promise<void> 
     name: newProduct.name,
     description: newProduct.description,
     currentPrice: newProduct.currentPrice,
-    originalPrice: newProduct.originalPrice,
-    discountRate:
-      newProduct.originalPrice > 0
-        ? Math.round(
-            ((newProduct.originalPrice - newProduct.currentPrice) /
-              newProduct.originalPrice) *
-              100,
-          )
-        : 0,
+    originalPrice: 0,
+    discountRate: 0,
     rating: 0,
     reviewCount: 0,
     stock: newProduct.stock,
@@ -245,17 +238,10 @@ const updateProductToMock = async (
     name: productData.name,
     description: productData.description,
     currentPrice: productData.currentPrice,
-    originalPrice: productData.originalPrice,
+    originalPrice: 0,
     stock: productData.stock,
     status: productData.status,
-    discountRate:
-      productData.originalPrice > 0
-        ? Math.round(
-            ((productData.originalPrice - productData.currentPrice) /
-              productData.originalPrice) *
-              100,
-          )
-        : 0,
+    discountRate: 0,
     imageUrl: productData.imageFile
       ? URL.createObjectURL(productData.imageFile)
       : (productData.imageUrl ?? existingProduct.imageUrl),

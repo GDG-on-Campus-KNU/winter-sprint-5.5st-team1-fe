@@ -28,7 +28,6 @@ export interface Product {
 export interface ProductFormData {
   name: string;
   currentPrice: number;
-  originalPrice: number; // 원가
   stock: number;
   description: string;
   imageFile?: File | null; // 새로 선택된 이미지 파일
