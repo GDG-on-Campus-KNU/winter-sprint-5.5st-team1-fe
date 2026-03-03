@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { loginApi, LoginResponse } from "@/api/auth.api";
+import { useAuthStore } from "@/stores/auth.store";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -19,11 +20,11 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm <LoginFormInputs>({
+  } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
     mode: "onBlur", // 포커스를 잃을 때 유효성 검사
   });
-  
+
   const onSubmit = async (data: LoginFormInputs) => {
     setFormError(null);
     try {
@@ -32,6 +33,7 @@ export default function LoginPage() {
       if (response.success && response.data) {
         localStorage.setItem("authToken", response.data.access_token);
         localStorage.setItem("refreshToken", response.data.refresh_token);
+        await useAuthStore.getState().hydrate();
         navigate("/");
       } else {
         setFormError(response.message || "로그인에 실패했습니다.");
@@ -83,7 +85,7 @@ export default function LoginPage() {
 
               {errors.email && (
                 <p className="mt-1 block text-base text-destructive font-medium">
-                {errors.email.message}
+                  {errors.email.message}
                 </p>
               )}
             </div>
@@ -107,7 +109,7 @@ export default function LoginPage() {
               </div>
               {errors.password && (
                 <p className="mt-1 block text-base text-destructive font-medium">
-                {errors.password.message}
+                  {errors.password.message}
                 </p>
               )}
             </div>
