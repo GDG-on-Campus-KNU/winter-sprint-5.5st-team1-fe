@@ -37,7 +37,9 @@ function OrderPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [userCoupons, setUserCoupons] = useState<Coupon[]>([]);
 
-    // 비정상 접근 차단 
+    const isDirectBuy = location.state?.isDirectBuy || false;
+    
+    // 비정상 접근 차단
 
     useEffect(() => {
         const loadCoupons = async () => {
@@ -130,6 +132,11 @@ function OrderPage() {
             if (orderRes.success) {
                 const itemIds = items.map(item => item.productId);
                 await deleteCartItemsAPI(itemIds);
+
+                if (!isDirectBuy) {
+                    const itemIds = items.map(item => item.productId);
+                    await deleteCartItemsAPI(itemIds);
+                }
 
                 alert("주문이 성공적으로 완료되었습니다! 🎉");
                 const mappedOrderData = {

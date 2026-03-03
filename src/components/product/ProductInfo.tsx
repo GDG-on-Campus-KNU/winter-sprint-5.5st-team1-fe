@@ -48,8 +48,14 @@ export const ProductInfo = ({ product }: ProductInfoProps) => {
   };
 
   const handleBuyNow = async () => {
-    await handleAddToCart();
-    navigate("/checkout");
+    const selectedItem = {
+      productId: product.id,
+      name: product.name,
+      price: product.currentPrice,
+      quantity: quantity,
+      imageUrl: product.imageUrl,
+    }
+    navigate("/order", { state: { selectedItems: [selectedItem], isDirectBuy: true } });
   };
 
   return (
