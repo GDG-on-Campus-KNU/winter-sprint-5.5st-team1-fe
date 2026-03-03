@@ -6,9 +6,11 @@ import { STATUS_CONFIG } from "@/types/product";
 
 interface AdminItemProps {
     item: Product;
+    onEdit: () => void;
+    onDelete: () => void;
 }
 
-export function AdminItem({ item }: AdminItemProps) {
+export function AdminItem({ item, onEdit, onDelete }: AdminItemProps) {
     const config = STATUS_CONFIG[item.status];
     return (
         <article className="flex w-full items-stretch divide-x divide-gray-200 py-6">
@@ -39,10 +41,14 @@ export function AdminItem({ item }: AdminItemProps) {
             </div>
             <div className="flex items-center justify-center w-40">
                 <div className="flex border border-gray-200 rounded-lg overflow-hidden">
-                    <button className="p-2 text-pink-500 hover:bg-pink-500/10 transition-colors border-pink-500">
+                    <button
+                        onClick={onEdit}
+                        className="p-2 text-pink-500 hover:bg-pink-500/10 transition-colors border-pink-500">
                         <Pencil size={24} />
                     </button>
-                    <button className="p-2 text-red hover:bg-red/10 transition-colors border-red">
+                    <button
+                        onClick={onDelete}
+                        className="p-2 text-red hover:bg-red/10 transition-colors border-red">
                         <Trash size={24} />
                     </button>
                 </div>

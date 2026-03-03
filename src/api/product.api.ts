@@ -15,7 +15,7 @@ export interface CreateProductResponse {
   error?: {
     code: string;
     message: string;
-    field_errors?: { field: string; message: string; }[];
+    field_errors?: { field: string; message: string }[];
   };
   timestamp: string;
 }
@@ -32,7 +32,7 @@ const createFormData = (data: ProductFormData): FormData => {
 
   const requestData = {
     name: data.name,
-    price: data.currentPrice, 
+    price: data.currentPrice,
     stock: data.stock,
     description: data.description,
     product_status: data.status,
@@ -40,7 +40,7 @@ const createFormData = (data: ProductFormData): FormData => {
 
   formData.append(
     "request",
-    new Blob([JSON.stringify(requestData)], { type: "application/json" })
+    new Blob([JSON.stringify(requestData)], { type: "application/json" }),
   );
   if (data.imageFile) {
     formData.append("image", data.imageFile);
@@ -108,6 +108,29 @@ const fetchProductsFromAPI = async (
   };
 };
 
+const deleteProductToMock = async (productId: number): Promise<void> => {
+  await mockDelay();
+  const index = MOCK_PRODUCTS.findIndex((product) => product.id === productId);
+  if (index !== -1) {
+    MOCK_PRODUCTS.splice(index, 1);
+  } else {
+    throw new Error("삭제할 상품을 찾을 수 없습니다.");
+  }
+};
+
+const deleteProductToAPI = async (productId: number): Promise<void> => {
+  const response = await instance.delete(`/api/v1/admin/products/${productId}`);
+  console.log("상품 삭제 성공:", response.data);
+};
+
+export const deleteProduct = async (productId: number): Promise<void> => {
+  if (USE_MOCK) {
+    return deleteProductToMock(productId);
+  } else {
+    return deleteProductToAPI(productId);
+  }
+};
+
 export const getProducts = async (
   page: number = 1,
   sortBy: string = "price-desc",
@@ -169,7 +192,9 @@ export const getAdminProducts = async (
 };
 
 // 상품 등록
-const createProductToMock = async (newProduct: ProductFormData,): Promise<void> => {
+const createProductToMock = async (
+  newProduct: ProductFormData,
+): Promise<void> => {
   await mockDelay();
 
   const newId =
@@ -198,19 +223,27 @@ const createProductToMock = async (newProduct: ProductFormData,): Promise<void> 
   MOCK_PRODUCTS.push(product);
 };
 
-const createProductToAPI = async (newProduct: ProductFormData,): Promise<void> => {
+const createProductToAPI = async (
+  newProduct: ProductFormData,
+): Promise<void> => {
   const formData = createFormData(newProduct);
 
-  const response = await instance.post<CreateProductResponse>("/api/v1/admin/products", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
+  const response = await instance.post<CreateProductResponse>(
+    "/api/v1/admin/products",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     },
-  });
+  );
 
   console.log("상품 등록 성공:", response.data);
 };
 
-export const createProduct = async (newProduct: ProductFormData,): Promise<void> => {
+export const createProduct = async (
+  newProduct: ProductFormData,
+): Promise<void> => {
   if (USE_MOCK) {
     return createProductToMock(newProduct);
   } else {
@@ -249,20 +282,29 @@ const updateProductToMock = async (
   MOCK_PRODUCTS[index] = updatedProduct;
 };
 
-const updateProductToAPI = async (productId: number, productData: ProductFormData,): Promise<void> => {
+const updateProductToAPI = async (
+  productId: number,
+  productData: ProductFormData,
+): Promise<void> => {
   const formData = createFormData(productData);
 
-  const response = await instance.patch(`/api/v1/admin/products/${productId}`, formData,{
+  const response = await instance.patch(
+    `/api/v1/admin/products/${productId}`,
+    formData,
+    {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    }
+    },
   );
 
   console.log("상품 수정 성공:", response.data);
 };
 
-export const updateProduct = async (productId: number, productData: ProductFormData,): Promise<void> => {
+export const updateProduct = async (
+  productId: number,
+  productData: ProductFormData,
+): Promise<void> => {
   if (USE_MOCK) {
     return updateProductToMock(productId, productData);
   } else {
