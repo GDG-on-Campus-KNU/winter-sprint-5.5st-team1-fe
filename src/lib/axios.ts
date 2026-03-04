@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: 'https://winter-sprint.kro.kr'
 });
 
 // 요청 - 토큰 자동 첨부
@@ -31,7 +31,7 @@ instance.interceptors.response.use(
         if (!refreshToken) throw new Error("No refresh token");
 
         const { data } = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh`,
+          'https://winter-sprint.kro.kr/api/v1/auth/refresh',
           { refresh_token: refreshToken },
         );
 
