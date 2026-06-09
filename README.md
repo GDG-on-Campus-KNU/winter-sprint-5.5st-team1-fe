@@ -8,7 +8,14 @@ React 기반 전자상거래 데모 웹 애플리케이션으로
 
 👉 **[Live Demo 바로가기](https://winter-team1.vercel.app/)**
 
+## 사용자 시연 영상
 
+https://github.com/user-attachments/assets/464cf527-9077-4b78-b9d4-7397888fd54a
+
+
+## 관리자 시연 영상
+
+https://github.com/user-attachments/assets/ec4bed56-025a-410f-bf26-29e5adb2e87d
 
 ## 🛠 Tech Stack
 
